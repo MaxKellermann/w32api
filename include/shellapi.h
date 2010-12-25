@@ -305,7 +305,7 @@ HINSTANCE WINAPI FindExecutableA(LPCSTR,LPCSTR,LPSTR);
 HINSTANCE WINAPI FindExecutableW(LPCWSTR,LPCWSTR,LPWSTR);
 UINT WINAPI SHAppBarMessage(DWORD,PAPPBARDATA);
 BOOL WINAPI Shell_NotifyIconA(DWORD,PNOTIFYICONDATAA);
-BOOL WINAPI Shell_NotifyIconW(DWORD,PNOTIFYICONDATAW);
+BOOL WINAPI _WNAME(Shell_NotifyIcon)(DWORD,PNOTIFYICONDATAW);
 int WINAPI ShellAboutA(HWND,LPCSTR,LPCSTR,HICON);
 int WINAPI ShellAboutW(HWND,LPCWSTR,LPCWSTR,HICON);
 #ifndef _WIN32_WCE
@@ -356,7 +356,7 @@ typedef SHFILEINFOW SHFILEINFO;
 #define ExtractIcon ExtractIconW
 #define ExtractIconEx ExtractIconExW
 #define FindExecutable FindExecutableW
-#define Shell_NotifyIcon Shell_NotifyIconW
+#define Shell_NotifyIcon _WNAME(Shell_NotifyIcon)
 #define ShellAbout ShellAboutW
 #define ShellExecute ShellExecuteW
 #define ShellExecuteEx _WNAME(ShellExecuteEx)
