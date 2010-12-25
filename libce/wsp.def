@@ -1,0 +1,15 @@
+LIBRARY WSP
+EXPORTS
+WBXMLToTextXML
+WBXMLToTextXMLGeneric
+WSPAbortTransaction
+WSPDecodeHeaders
+WSPFreeBuffer
+WSPGetData
+WSPGetMIMEType
+WSPOpenUrl
+WSPSetGateway
+WSPSetUserAgent
+WSPSetUserProfile
+WSPShutDown
+WSPStartUp

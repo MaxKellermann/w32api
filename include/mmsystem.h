@@ -1561,6 +1561,12 @@ BOOL WINAPI sndPlaySoundW(LPCWSTR,UINT);
 BOOL WINAPI PlaySoundA(LPCSTR,HMODULE,DWORD);
 BOOL WINAPI PlaySoundW(LPCWSTR,HMODULE,DWORD);
 UINT WINAPI waveOutGetNumDevs(void);
+#ifdef _WIN32_WCE
+#define waveOutGetDevCapsW waveOutGetDevCaps
+#define waveOutGetErrorTextW waveOutGetErrorText
+#define waveInGetDevCapsW waveInGetDevCaps
+#define waveInGetErrorTextW waveInGetErrorText
+#endif
 MMRESULT WINAPI waveOutGetDevCapsA(UINT,LPWAVEOUTCAPSA,UINT);
 MMRESULT WINAPI waveOutGetDevCapsW(UINT,LPWAVEOUTCAPSW,UINT);
 MMRESULT WINAPI waveOutGetVolume(HWAVEOUT,PDWORD);
@@ -1649,6 +1655,12 @@ MMRESULT WINAPI auxSetVolume(UINT,DWORD);
 MMRESULT WINAPI auxGetVolume(UINT,PDWORD);
 MMRESULT WINAPI auxOutMessage(UINT,UINT,DWORD,DWORD);
 UINT WINAPI mixerGetNumDevs(void);
+#ifdef _WIN32_WCE
+#define mixerGetDevCapsW mixerGetDevCaps
+#define mixerGetLineInfoW mixerGetLineInfo
+#define mixerGetLineControlsW mixerGetLineControls
+#define mixerGetControlDetailsW mixerGetControlDetails
+#endif
 MMRESULT WINAPI mixerGetDevCapsA(UINT,LPMIXERCAPSA,UINT);
 MMRESULT WINAPI mixerGetDevCapsW(UINT,LPMIXERCAPSW,UINT);
 MMRESULT WINAPI mixerOpen(LPHMIXER,UINT,DWORD,DWORD,DWORD);
@@ -1863,19 +1875,23 @@ typedef MCI_OVLY_WINDOW_PARMSW MCI_OVLY_WINDOW_PARMS,*PMCI_OVLY_WINDOW_PARMS,*LP
 typedef MCI_OVLY_SAVE_PARMSW MCI_OVLY_SAVE_PARMS,*PMCI_OVLY_SAVE_PARMS,*LPMCI_OVLY_SAVE_PARMS;
 #define sndPlaySound sndPlaySoundW
 #define PlaySound PlaySoundW
+#ifndef _WIN32_WCE
 #define waveOutGetDevCaps waveOutGetDevCapsW
 #define waveOutGetErrorText waveOutGetErrorTextW
 #define waveInGetDevCaps waveInGetDevCapsW
 #define waveInGetErrorText waveInGetErrorTextW
+#endif
 #define midiOutGetDevCaps midiOutGetDevCapsW
 #define midiOutGetErrorText midiOutGetErrorTextW
 #define midiInGetDevCaps midiInGetDevCapsW
 #define midiInGetErrorText midiInGetErrorTextW
 #define auxGetDevCaps auxGetDevCapsW
+#ifndef _WIN32_WCE
 #define mixerGetDevCaps mixerGetDevCapsW
 #define mixerGetLineInfo mixerGetLineInfoW
 #define mixerGetLineControls mixerGetLineControlsW
 #define mixerGetControlDetails mixerGetControlDetailsW
+#endif
 #define joyGetDevCaps joyGetDevCapsW
 #define mmioInstallIOProc mmioInstallIOProcW
 #define mmioStringToFOURCC mmioStringToFOURCCW

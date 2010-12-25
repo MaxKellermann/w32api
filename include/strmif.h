@@ -4,6 +4,8 @@
 #pragma GCC system_header
 #endif
 
+#include <ocidl.h>
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -12,8 +14,17 @@ extern "C" {
 #define TVAUDIO_MODE_MASK 0x000000FF
 #define TVAUDIO_PRESET_MASK 0x0000FF00
 /*--- DirectShow Reference - DirectShow Data Types */
+/* REFERENCE http://msdn.microsoft.com/en-us/library/ms783328(VS.85).aspx */
+typedef LONG_PTR OAEVENT;
+typedef LONG_PTR OAHWND;
 typedef LONGLONG REFERENCE_TIME;
 typedef double REFTIME;
+typedef long OAFilterState;
+
+/* http://msdn.microsoft.com/en-us/library/ms708770(VS.85).aspx */
+typedef unsigned int HEVENT;
+typedef HANDLE HSEMAPHORE;
+
 /*--- DirectShow Reference - Constants and GUIDs */
 enum { 
 	MERIT_PREFERRED = 0x800000,
@@ -731,10 +742,13 @@ typedef struct tagCOLORKEY {
 #define CK_NOCOLORKEY 0x00000000
 #define CK_INDEX 0x00000001
 #define CK_RGB 0x00000002
-typedef struct {
+  /*typedef struct {
 	DWORD dw1;
 	DWORD dw2;
 } DDCOLORKEY;
+typedef DDCOLORKEY *LPDDCOLORKEY;
+  */
+
 typedef struct tagDVD_AudioAttributes {
 	DVD_AUDIO_APPMODE AppMode;
 	DVD_AUDIO_FORMAT AudioFormat; 
@@ -889,7 +903,7 @@ typedef struct _NORMALIZEDRECT {
 } NORMALIZEDRECT,*PNORMALIZEDRECT;
 #define MAX_PIN_NAME 128
 typedef struct _PinInfo {
-	IBaseFilter *pFilter;
+       struct IBaseFilter *pFilter;
 	PIN_DIRECTION dir;
 	WCHAR achName[MAX_PIN_NAME];
 } PIN_INFO;
@@ -985,6 +999,7 @@ typedef struct _VIDEO_STREAM_CONFIG_CAPS {
 	LONG MinBitsPerSecond;
 	LONG MaxBitsPerSecond;
 } VIDEO_STREAM_CONFIG_CAPS;
+/**********
 typedef struct tagVMRALLOCATIONINFO {
 	DWORD dwFlags;
 	LPBITMAPINFOHEADER lpHdr;
@@ -995,6 +1010,7 @@ typedef struct tagVMRALLOCATIONINFO {
 	DWORD dwInterlaceFlags;
 	SIZE szNativeSize;
 } VMRALLOCATIONINFO;
+***********/
 /**********
 typedef struct _VMRALPHABITMAP {
 	DWORD dwFlags;
@@ -1023,8 +1039,8 @@ typedef struct _VMRFrequency {
 	DWORD dwDenominator;
 } VMRFrequency;
 typedef struct tagVMRGUID {
-	GUID *pGUID;
-	GUID GUID;
+       LPGUID pGUID;
+       _GUID GUID;
 } VMRGUID;
 typedef struct tagVMRMONITORINFO {
 	VMRGUID guid;
@@ -1067,7 +1083,9 @@ typedef struct _VMRVIDEOSTREAMINFO {
 	NORMALIZEDRECT rNormal;
 } VMRVIDEOSTREAMINFO;
 **********/
+
 /*--- DirectShow Reference - Interfaces */
+EXTERN_C const IID IID_IAMAnalogVideoDecoder;
 #define INTERFACE IAMAnalogVideoDecoder
 DECLARE_INTERFACE_(IAMAnalogVideoDecoder, IUnknown)
 {
@@ -1085,6 +1103,8 @@ DECLARE_INTERFACE_(IAMAnalogVideoDecoder, IUnknown)
 	STDMETHOD_(HRESULT,put_VCRHorizontalLocking)(THIS_ long) PURE;
 };
 #undef INTERFACE
+
+EXTERN_C const IID IID_IAMAudioInputMixer;
 #define INTERFACE IAMAudioInputMixer
 DECLARE_INTERFACE_(IAMAudioInputMixer, IUnknown)
 {
@@ -1109,6 +1129,8 @@ DECLARE_INTERFACE_(IAMAudioInputMixer, IUnknown)
 	STDMETHOD_(HRESULT,put_Treble)(THIS_ double) PURE;
 };
 #undef INTERFACE
+
+EXTERN_C const IID IID_IAMAudioRendererStats;
 #define INTERFACE IAMAudioRendererStats
 DECLARE_INTERFACE_(IAMAudioRendererStats, IUnknown)
 {
@@ -1118,6 +1140,8 @@ DECLARE_INTERFACE_(IAMAudioRendererStats, IUnknown)
 	STDMETHOD_(HRESULT,GetStatParam)(THIS_ DWORD,DWORD*,DWORD*) PURE;
 };
 #undef INTERFACE
+
+EXTERN_C const IID IID_IAMBufferNegotiation;
 #define INTERFACE IAMBufferNegotiation
 DECLARE_INTERFACE_(IAMBufferNegotiation, IUnknown)
 {
@@ -1128,6 +1152,8 @@ DECLARE_INTERFACE_(IAMBufferNegotiation, IUnknown)
 	STDMETHOD_(HRESULT,SuggestAllocatorProperties)(THIS_ const ALLOCATOR_PROPERTIES*) PURE;
 };
 #undef INTERFACE
+
+EXTERN_C const IID IID_IAMCameraControl;
 #define INTERFACE IAMCameraControl
 DECLARE_INTERFACE_(IAMCameraControl, IUnknown)
 {
@@ -1140,6 +1166,7 @@ DECLARE_INTERFACE_(IAMCameraControl, IUnknown)
 };
 #undef INTERFACE
 
+EXTERN_C const IID IID_IAMCertifiedOutputProtection;
 #define INTERFACE IAMCertifiedOutputProtection
 DECLARE_INTERFACE_(IAMCertifiedOutputProtection, IUnknown)
 {
@@ -1152,6 +1179,435 @@ DECLARE_INTERFACE_(IAMCertifiedOutputProtection, IUnknown)
 	STDMETHOD_(HRESULT,SessionSequenceStart)(THIS_ const AMCOPPSignature*) PURE;
 };
 #undef INTERFACE
+
+/* NEW INTERFACES FOR DIRECTSHOW */
+/* REFERENCE http://msdn.microsoft.com/en-us/library/dd390343(VS.85).aspx */
+EXTERN_C const IID IID_IReferenceClock;
+#define INTERFACE IReferenceClock
+DECLARE_INTERFACE_(IReferenceClock, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, GetTime) (THIS_ REFERENCE_TIME*) PURE;
+    STDMETHOD_(HRESULT, AdviseTime) (THIS_ REFERENCE_TIME, REFERENCE_TIME, HEVENT, DWORD*) PURE;
+    STDMETHOD_(HRESULT, AdvisePeriodicTime) (THIS_ REFERENCE_TIME, REFERENCE_TIME, HSEMAPHORE, DWORD*) PURE;
+    STDMETHOD_(HRESULT, Unadvise) (THIS_ DWORD ) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IPin;
+#define INTERFACE IPin
+DECLARE_INTERFACE_(IPin, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT,Connect) (THIS_ IPin *, AM_MEDIA_TYPE *) PURE;
+    STDMETHOD_(HRESULT,ReceiveConnection) (THIS_ IPin *, const AM_MEDIA_TYPE *) PURE;
+    STDMETHOD_(HRESULT,Disconnect) (THIS) PURE;
+    STDMETHOD_(HRESULT,ConnectedTo) (THIS_ IPin **) PURE;
+    STDMETHOD_(HRESULT,ConnectionMediaType) (THIS_ AM_MEDIA_TYPE * pmt) PURE;
+    STDMETHOD_(HRESULT,QueryPinInfo) (THIS_ PIN_INFO *) PURE;
+    STDMETHOD_(HRESULT,QueryDirection) (THIS_ PIN_DIRECTION *) PURE;
+    STDMETHOD_(HRESULT,QueryId) (THIS_ unsigned short **) PURE;
+    STDMETHOD_(HRESULT,QueryAccept) (THIS_ const AM_MEDIA_TYPE *) PURE;
+    STDMETHOD_(HRESULT,EnumMediaTypes) (THIS_ struct IEnumMediaTypes **) PURE;
+    STDMETHOD_(HRESULT,QueryInternalConnections) (THIS_ IPin **, unsigned long *) PURE;
+    STDMETHOD_(HRESULT,EndOfStream) (THIS) PURE;
+    STDMETHOD_(HRESULT,BeginFlush) (THIS) PURE;
+    STDMETHOD_(HRESULT,EndFlush) (THIS) PURE;
+    STDMETHOD_(HRESULT,NewSegment) (THIS_ REFERENCE_TIME, REFERENCE_TIME, double) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IEnumPins;
+#define INTERFACE IEnumPins
+DECLARE_INTERFACE_(IEnumPins, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, Clone) (THIS_ struct IEnumPins** ) PURE;
+    STDMETHOD_(HRESULT, Next) (THIS_ ULONG, struct IPin**, ULONG*) PURE;
+    STDMETHOD_(VOID, Reset) (THIS) PURE;
+    STDMETHOD_(HRESULT, Skip) (THIS_ ULONG) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IEnumMediaTypes;
+#define INTERFACE IEnumMediaTypes
+DECLARE_INTERFACE_(IEnumMediaTypes, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, Clone) (THIS_ struct IEnumMediaTypes** ) PURE;
+    STDMETHOD_(HRESULT, Next) (THIS_ ULONG, AM_MEDIA_TYPE**, ULONG) PURE;
+    STDMETHOD_(VOID, Reset) (THIS) PURE;
+    STDMETHOD_(HRESULT, Skip) (THIS_ ULONG) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IBaseFilter;
+#define INTERFACE IBaseFilter
+DECLARE_INTERFACE_(IBaseFilter, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT,GetClassID) (THIS_ CLSID * pClassID) PURE;
+    STDMETHOD_(HRESULT,Stop) (THIS) PURE;
+    STDMETHOD_(HRESULT,Pause) (THIS) PURE;
+    STDMETHOD_(HRESULT,Run) (THIS_ REFERENCE_TIME tStart) PURE;
+    STDMETHOD_(HRESULT,GetState) (THIS_ unsigned long, void *) PURE;
+    STDMETHOD_(HRESULT,SetSyncSource) (THIS_ struct IReferenceClock*) PURE;
+    STDMETHOD_(HRESULT,GetSyncSource) (THIS_ struct IReferenceClock**) PURE;
+    STDMETHOD_(HRESULT,EnumPins) (THIS_ struct IEnumPins **) PURE;
+    STDMETHOD_(HRESULT,FindPin) (THIS_ const unsigned short *, struct IPin *) PURE;
+    STDMETHOD_(HRESULT,QueryFilterInfo) (THIS_ void *) PURE;
+    STDMETHOD_(HRESULT,JoinFilterGraph) (THIS_ struct IFilterGraph *, const unsigned short *) PURE;
+    STDMETHOD_(HRESULT,QueryVendorInfo) (THIS_ unsigned short **) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IAMTVTuner;
+#define INTERFACE IAMTVTuner
+DECLARE_INTERFACE_(IAMTVTuner, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT,put_Channel) (THIS_ long, long, long) PURE;
+    STDMETHOD_(HRESULT,get_Channel) (THIS_ long *, long *, long *) PURE;
+    STDMETHOD_(HRESULT,ChannelMinMax) (THIS_ long *, long *) PURE;
+    STDMETHOD_(HRESULT,put_CountryCode) (THIS_ long) PURE;
+    STDMETHOD_(HRESULT,get_CountryCode) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT,put_TuningSpace) (THIS_ long) PURE;
+    STDMETHOD_(HRESULT,get_TuningSpace) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT,Logon) (THIS_ HANDLE) PURE;
+    STDMETHOD_(HRESULT,Logout) (IAMTVTuner *) PURE;
+    STDMETHOD_(HRESULT,SignalPresen) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT,put_Mode) (THIS_ AMTunerModeType) PURE;
+    STDMETHOD_(HRESULT,get_Mode) (THIS_ AMTunerModeType *) PURE;
+    STDMETHOD_(HRESULT,GetAvailableModes) (THIS_ long *) PURE;
+/****** NOT IMPLEMENTED
+    STDMETHOD_(HRESULT,RegisterNotificationCallBack) (THIS_ struct IAMTunerNotification*, long) PURE;
+    STDMETHOD_(HRESULT,UnRegisterNotificationCallBack) (THIS_ struct IAMTunerNotification*) PURE;
+*******/
+    STDMETHOD_(HRESULT,get_AvailableTVFormats) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT,get_TVFormat) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT,AutoTune) (THIS_ long, long *) PURE;
+    STDMETHOD_(HRESULT,StoreAutoTune) (IAMTVTuner *) PURE;
+    STDMETHOD_(HRESULT,get_NumInputConnections) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT,put_InputType) (THIS_ long, TunerInputType) PURE;
+    STDMETHOD_(HRESULT,get_InputType) (THIS_ long, TunerInputType *) PURE;
+    STDMETHOD_(HRESULT,put_ConnectInput) (THIS_ long) PURE;
+    STDMETHOD_(HRESULT,get_ConnectInput) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT,get_VideoFrequency) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT,get_AudioFrequency) (THIS_ long *) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IMediaControl;
+#define INTERFACE IMediaControl
+DECLARE_INTERFACE_(IMediaControl, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*);
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT,GetTypeInfoCount) (THIS_ UINT *) PURE;
+    STDMETHOD_(HRESULT,GetTypeInfo) (THIS_ UINT, LCID, LPTYPEINFO *) PURE;
+    STDMETHOD_(HRESULT,GetIDsOfNames) (THIS_ REFIID, LPOLESTR *, UINT, LCID,
+                              DISPID *) PURE;
+    STDMETHOD_(HRESULT,Invoke) (THIS_ DISPID, REFIID, LCID, WORD, DISPPARAMS*,
+                       VARIANT *, EXCEPINFO *, UINT *) PURE;
+    STDMETHOD_(HRESULT,Run) (THIS) PURE;
+    STDMETHOD_(HRESULT,Pause) (THIS) PURE;
+    STDMETHOD_(HRESULT,Stop) (THIS) PURE;
+    STDMETHOD_(HRESULT,GetState) (THIS_ LONG, OAFilterState *) PURE;
+    STDMETHOD_(HRESULT,RenderFile) (THIS_ BSTR) PURE;
+    STDMETHOD_(HRESULT,AddSourceFilter) (THIS_ BSTR, LPDISPATCH *) PURE;
+    STDMETHOD_(HRESULT,get_FilterCollection) (THIS_ LPDISPATCH *) PURE;
+    STDMETHOD_(HRESULT,get_RegFilterCollection) (THIS_ LPDISPATCH *) PURE;
+    STDMETHOD_(HRESULT,StopWhenReady) (IMediaControl *) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IGraphBuilder;
+#define INTERFACE IGraphBuilder
+DECLARE_INTERFACE_(IGraphBuilder, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT,AddFilter) (THIS_ IBaseFilter *, LPCWSTR) PURE;
+    STDMETHOD_(HRESULT,RemoveFilter) (THIS_ IBaseFilter *) PURE;
+    STDMETHOD_(HRESULT,EnumFilters) (THIS_ struct IEnumFilters **) PURE;
+    STDMETHOD_(HRESULT,FindFilterByName) (THIS_ LPCWSTR, IBaseFilter **) PURE;
+    STDMETHOD_(HRESULT,ConnectDirect) (THIS_ IPin *, IPin *, const AM_MEDIA_TYPE *) PURE;
+    STDMETHOD_(HRESULT,Reconnect) (THIS_ IPin *) PURE;
+    STDMETHOD_(HRESULT,Disconnect) (THIS_ IPin *) PURE;
+    STDMETHOD_(HRESULT,SetDefaultSyncSource) (IGraphBuilder *) PURE;
+    STDMETHOD_(HRESULT,Connect) (THIS_ IPin *, IPin *) PURE;
+    STDMETHOD_(HRESULT,Render) (THIS_ IPin *) PURE;
+    STDMETHOD_(HRESULT,RenderFile) (THIS_ LPCWSTR, LPCWSTR) PURE;
+    STDMETHOD_(HRESULT,AddSourceFilter) (THIS_ LPCWSTR, LPCWSTR, IBaseFilter **) PURE;
+    STDMETHOD_(HRESULT,SetLogFile) (THIS_ DWORD_PTR) PURE;
+    STDMETHOD_(HRESULT,Abort) (IGraphBuilder *) PURE;
+    STDMETHOD_(HRESULT,ShouldOperationContinue) (IGraphBuilder *) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IFileSinkFilter;
+#define INTERFACE IFileSinkFilter
+DECLARE_INTERFACE_(IFileSinkFilter, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*);
+    STDMETHOD_(ULONG, AddRef) (THIS);
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT,SetFileName) (THIS_  LPCOLESTR, const AM_MEDIA_TYPE *) PURE;
+    STDMETHOD_(HRESULT,GetCurFile) (THIS_  LPCOLESTR*, const AM_MEDIA_TYPE *) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IAMCopyCaptureFileProgress;
+#define INTERFACE IAMCopyCaptureFileProgress
+DECLARE_INTERFACE_(IAMCopyCaptureFileProgress, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*);
+    STDMETHOD_(ULONG, AddRef) (THIS);
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, Progress) (THIS_ int ) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_ICaptureGraphBuilder2;
+#define INTERFACE ICaptureGraphBuilder2
+DECLARE_INTERFACE_(ICaptureGraphBuilder2, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*);
+    STDMETHOD_(ULONG, AddRef) (THIS);
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT,SetFiltergraph) (THIS_ IGraphBuilder *) PURE;
+    STDMETHOD_(HRESULT,GetFiltergraph) (THIS_ IGraphBuilder **) PURE;
+    STDMETHOD_(HRESULT,SetOutputFileName) (THIS_ const GUID *, LPCOLESTR,
+                                  IBaseFilter **, IFileSinkFilter**) PURE;
+    STDMETHOD_(HRESULT,FindInterface) (THIS_ const GUID *, const GUID *,
+                              IBaseFilter *, REFIID, void **) PURE;
+    STDMETHOD_(HRESULT,RenderStream) (THIS_ const GUID *, const GUID *, IUnknown *,
+                             IBaseFilter *, IBaseFilter *) PURE;
+    STDMETHOD_(HRESULT,ControlStream) (THIS_ const GUID *, const GUID *,
+                              IBaseFilter *, REFERENCE_TIME *,
+                              REFERENCE_TIME *, WORD, WORD) PURE;
+    STDMETHOD_(HRESULT,AllocCapFile) (THIS_ LPCOLESTR, DWORDLONG) PURE;
+    STDMETHOD_(HRESULT,CopyCaptureFile) (THIS_ LPOLESTR, LPOLESTR, int,
+                                struct IAMCopyCaptureFileProgress*) PURE;
+    STDMETHOD_(HRESULT,FindPin) (THIS_ IUnknown *, PIN_DIRECTION, const GUID *,
+                        const GUID *, BOOL, int, IPin **) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IAMCrossBar;
+#define INTERFACE IAMCrossbar
+DECLARE_INTERFACE_(IAMCrossbar, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT,get_PinCounts) (THIS_ long *, long *) PURE;
+    STDMETHOD_(HRESULT,CanRoute) (THIS_ long, long) PURE;
+    STDMETHOD_(HRESULT,Route) (THIS_ long, long) PURE;
+    STDMETHOD_(HRESULT,get_IsRoutedTo) (THIS_ long, long *) PURE;
+    STDMETHOD_(HRESULT,get_CrossbarPinInfo) (THIS_ BOOL, long, long *, long *) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IAMStreamConfig;
+#define INTERFACE IAMStreamConfig
+DECLARE_INTERFACE_(IAMStreamConfig, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, SetFormat) (THIS_ AM_MEDIA_TYPE *) PURE;
+    STDMETHOD_(HRESULT, GetFormat) (THIS_ AM_MEDIA_TYPE **) PURE;
+    STDMETHOD_(HRESULT, GetNumberOfCapabilities) (THIS_ int *,int *) PURE;
+    STDMETHOD_(HRESULT, GetStreamCaps) (THIS_ int,AM_MEDIA_TYPE **, BYTE *) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IAMVideoProcAmp;
+#define INTERFACE IAMVideoProcAmp
+DECLARE_INTERFACE_(IAMVideoProcAmp, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, GetRange) (THIS_ long, long *, long *, long *, long *,long *) PURE;
+    STDMETHOD_(HRESULT, Set) (THIS_ long, long, long) PURE;
+    STDMETHOD_(HRESULT, Get) (THIS_ long, long *, long *) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IAMTVAudio;
+#define INTERFACE IAMTVAudio
+DECLARE_INTERFACE_(IAMTVAudio, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, GetHardwareSupportedTVAudioModes) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT, GetAvailableTVAudioModes) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT, get_TVAudioMode) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT, put_TVAudioMode) (THIS_ long) PURE;
+/****** NOT IMPLEMENTED
+    STDMETHOD_(HRESULT, RegisterNotificationCallBack) (THIS_ struct IAMTunerNotification*, long) PURE;
+    STDMETHOD_(HRESULT, UnRegisterNotificationCallBack) (THIS_ struct IAMTunerNotification*) PURE;
+*******/
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_ISampleGrabberCB;
+#define INTERFACE ISampleGrabberCB
+DECLARE_INTERFACE_(ISampleGrabberCB, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, SampleCB) (THIS_ double, struct IMediaSample *) PURE;
+    STDMETHOD_(HRESULT, BufferCB) (THIS_ double, BYTE *, long) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_ISampleGrabber;
+#define INTERFACE ISampleGrabber
+DECLARE_INTERFACE_(ISampleGrabber, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, SetOneShot) (THIS_ BOOL) PURE;
+    STDMETHOD_(HRESULT, SetMediaType) (THIS_ const AM_MEDIA_TYPE *) PURE;
+    STDMETHOD_(HRESULT, GetConnectedMediaType) (THIS_ AM_MEDIA_TYPE *) PURE;
+    STDMETHOD_(HRESULT, SetBufferSamples) (THIS_ BOOL) PURE;
+    STDMETHOD_(HRESULT, GetCurrentBuffer) (THIS_ long *, long *) PURE;
+    STDMETHOD_(HRESULT, GetCurrentSample) (THIS_ struct IMediaSample **) PURE;
+    STDMETHOD_(HRESULT, SetCallback) (THIS_ ISampleGrabberCB *, long) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IFilterGraph;
+#define INTERFACE IFilterGraph
+DECLARE_INTERFACE_(IFilterGraph, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, AddFilter) (THIS_ struct IBaseFilter *, LPCWSTR) PURE;
+    STDMETHOD_(HRESULT, RemoveFilter) (THIS_ struct IBaseFilter *) PURE;
+    STDMETHOD_(HRESULT, EnumFilters) (THIS_ struct IEnumFilters **) PURE;
+    STDMETHOD_(HRESULT, FindFilterByName) (THIS_ LPCWSTR, struct IBaseFilter **) PURE;
+    STDMETHOD_(HRESULT, ConnectDirect) (THIS_ IPin *, IPin *, const AM_MEDIA_TYPE *) PURE;
+    STDMETHOD_(HRESULT, Reconnect) (THIS_ struct IPin *) PURE;
+    STDMETHOD_(HRESULT, Disconnect) (THIS_ struct IPin *) PURE;
+    STDMETHOD_(HRESULT, SetDefaultSyncSource) (THIS) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IMediaSample;
+#define INTERFACE IMediaSample
+DECLARE_INTERFACE_(IMediaSample, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, GetPointer )(THIS_ unsigned char** ) PURE;
+    STDMETHOD_(LONG,GetSize )(THIS) PURE;
+    STDMETHOD_(HRESULT, GetTime )(THIS_ REFERENCE_TIME* ,REFERENCE_TIME* ) PURE;
+    STDMETHOD_(HRESULT, SetTime )(THIS_ REFERENCE_TIME* ,REFERENCE_TIME* ) PURE;
+    STDMETHOD_(HRESULT, IsSyncPoint )(THIS) PURE;
+    STDMETHOD_(HRESULT, SetSyncPoint )(THIS_ long ) PURE;
+    STDMETHOD_(HRESULT, IsPreroll )(THIS) PURE;
+    STDMETHOD_(HRESULT, SetPreroll )(THIS_ long ) PURE;
+    STDMETHOD_(LONG,GetActualDataLength)(THIS) PURE;
+    STDMETHOD_(HRESULT, SetActualDataLength )(THIS_ long ) PURE;
+    STDMETHOD_(HRESULT, GetMediaType )(THIS_ AM_MEDIA_TYPE** ) PURE;
+    STDMETHOD_(HRESULT, SetMediaType )(THIS_ AM_MEDIA_TYPE* ) PURE;
+    STDMETHOD_(HRESULT, IsDiscontinuity )(THIS) PURE;
+    STDMETHOD_(HRESULT, SetDiscontinuity )(THIS_ long ) PURE;
+    STDMETHOD_(HRESULT, GetMediaTime )(THIS_ long long* ,long long* ) PURE;
+    STDMETHOD_(HRESULT, SetMediaTime )(THIS_ long long* ,long long* ) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IMediaFilter;
+#define INTERFACE IMediaFilter
+DECLARE_INTERFACE_(IMediaFilter, IUnknown)
+{
+    STDMETHOD(QueryInterface) (THIS_ REFIID,PVOID*) PURE;
+    STDMETHOD_(ULONG, AddRef) (THIS) PURE;
+    STDMETHOD_(ULONG, Release) (THIS) PURE;
+    STDMETHOD_(HRESULT, Stop) (THIS) PURE;
+    STDMETHOD_(HRESULT, Pause) (THIS) PURE;
+    STDMETHOD_(HRESULT, Run) (THIS_ REFERENCE_TIME) PURE;
+    STDMETHOD_(HRESULT, GetState) (THIS_ DWORD, FILTER_STATE *) PURE;
+    STDMETHOD_(HRESULT, SetSyncSource) (THIS_ IReferenceClock *) PURE;
+    STDMETHOD_(HRESULT, GetSyncSource) (THIS_ IReferenceClock **) PURE;
+};
+#undef INTERFACE
+
+EXTERN_C const IID IID_IVideoWindow;
+#define INTERFACE IVideoWindow
+DECLARE_INTERFACE_(IVideoWindow, IUnknown)
+{
+    STDMETHOD(QueryInterface )(THIS_ REFIID ,void **) PURE;
+    STDMETHOD_(ULONG,AddRef )(THIS) PURE;
+    STDMETHOD_(ULONG,Release )(THIS) PURE;
+    STDMETHOD_(HRESULT, GetTypeInfoCount) (THIS_ UINT * ) PURE;
+    STDMETHOD_(HRESULT, GetTypeInfo) (THIS_  UINT ,LCID , ITypeInfo ** ) PURE;
+    STDMETHOD_(HRESULT, GetIDsOfNames) (THIS_  REFIID ,LPOLESTR * , UINT ,LCID , DISPID * ) PURE;
+    STDMETHOD_(HRESULT, Invoke) (THIS_  DISPID ,REFIID , LCID , WORD ,void *, VARIANT * ,EXCEPINFO * , UINT * ) PURE;
+    STDMETHOD_(HRESULT, put_Caption) (THIS_  BSTR ) PURE;
+    STDMETHOD_(HRESULT, get_Caption) (THIS_  BSTR * ) PURE;
+    STDMETHOD_(HRESULT, put_WindowStyle) (THIS_ long ) PURE;
+    STDMETHOD_(HRESULT, get_WindowStyle) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT, put_WindowStyleEx) (THIS_ long ) PURE;
+    STDMETHOD_(HRESULT, get_WindowStyleEx) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT, put_AutoShow) (THIS_  long ) PURE;
+    STDMETHOD_(HRESULT, get_AutoShow) (THIS_  long *) PURE;
+    STDMETHOD_(HRESULT, put_WindowState) (THIS_ long ) PURE;
+    STDMETHOD_(HRESULT, get_WindowState) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT, put_BackgroundPalette) (THIS_ long ) PURE;
+    STDMETHOD_(HRESULT, get_BackgroundPalette) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT, put_Visible) (THIS_  long ) PURE;
+    STDMETHOD_(HRESULT, get_Visible) (THIS_  long *) PURE;
+    STDMETHOD_(HRESULT, put_Left) (THIS_  long ) PURE;
+    STDMETHOD_(HRESULT, get_Left) (THIS_  long *) PURE;
+    STDMETHOD_(HRESULT, put_Width) (THIS_  long ) PURE;
+    STDMETHOD_(HRESULT, get_Width) (THIS_  long *) PURE;
+    STDMETHOD_(HRESULT, put_Top) (THIS_  long ) PURE;
+    STDMETHOD_(HRESULT, get_Top) (THIS_  long *) PURE;
+    STDMETHOD_(HRESULT, put_Height) (THIS_  long ) PURE;
+    STDMETHOD_(HRESULT, get_Height) (THIS_  long *) PURE;
+    STDMETHOD_(HRESULT, put_Owner) (THIS_  OAHWND ) PURE;
+    STDMETHOD_(HRESULT, get_Owner) (THIS_  OAHWND * ) PURE;
+    STDMETHOD_(HRESULT, put_MessageDrain) (THIS_  OAHWND ) PURE;
+    STDMETHOD_(HRESULT, get_MessageDrain) (THIS_ OAHWND * ) PURE;
+    STDMETHOD_(HRESULT, get_BorderColor) (THIS_  long *) PURE;
+    STDMETHOD_(HRESULT, put_BorderColor) (THIS_  long ) PURE;
+    STDMETHOD_(HRESULT, get_FullScreenMode) (THIS_ long *) PURE;
+    STDMETHOD_(HRESULT, put_FullScreenMode) (THIS_ long ) PURE;
+    STDMETHOD_(HRESULT, SetWindowForeground) (THIS_ long ) PURE;
+    STDMETHOD_(HRESULT, NotifyOwnerMessage) (THIS_  OAHWND ,long , LONG_PTR ,LONG_PTR ) PURE;
+    STDMETHOD_(HRESULT, SetWindowPosition) (THIS_  long ,long , long ,long ) PURE;
+    STDMETHOD_(HRESULT, GetWindowPosition) (THIS_  long *,long *, long *,long *) PURE;
+    STDMETHOD_(HRESULT, GetMinIdealImageSize) (THIS_ long *, long *) PURE;
+    STDMETHOD_(HRESULT, GetMaxIdealImageSize) (THIS_ long *, long *) PURE;
+    STDMETHOD_(HRESULT, GetRestorePosition) (THIS_  long *,long *, long *,long *) PURE;
+    STDMETHOD_(HRESULT, HideCursor) (THIS_  long ) PURE;
+    STDMETHOD_(HRESULT, IsCursorHidden) (THIS_ long *) PURE;
+};
 
 #ifdef __cplusplus
 }

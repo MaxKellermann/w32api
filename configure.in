@@ -12,6 +12,8 @@ AC_INIT(lib/scrnsave.c)
 
 AC_CANONICAL_SYSTEM
 
+#LIB_AC_PROG_CC
+
 dnl Find install command
 AC_PROG_INSTALL
 
@@ -48,4 +50,14 @@ else
 fi
 AC_SUBST(BUILDENV)
 
-AC_OUTPUT(Makefile lib/Makefile lib/ddk/Makefile lib/directx/Makefile)
+case "${host_alias}" in
+    *-mingw32ce* | *-cegcc*)
+        SUBDIRS="libce"
+        ;;
+    *)
+        SUBDIRS="lib"
+        ;;
+esac
+AC_SUBST(SUBDIRS)
+
+AC_OUTPUT(Makefile lib/Makefile lib/ddk/Makefile lib/directx/Makefile libce/Makefile)

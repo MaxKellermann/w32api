@@ -1,0 +1,7 @@
+LIBRARY PHONE
+EXPORTS
+PhoneCloseCallLog
+PhoneGetCallLogEntry
+PhoneMakeCall
+PhoneOpenCallLog
+PhoneSeekCallLog

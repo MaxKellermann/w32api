@@ -1,0 +1,7 @@
+LIBRARY CEOSUTIL
+EXPORTS
+__rt_sdiv64by64
+__rt_srem64by64
+__rt_sdiv64by64
+__rt_sdiv
+__rt_sdiv

@@ -5,8 +5,8 @@
 #endif
 
 #include <strmif.h>
-#include <amaudio.h>
-#include <amvideo.h>
+//#include <amaudio.h>
+//#include <amvideo.h>
 #include <evcode.h>
 #include <audevcod.h>
 #include <dvdevcod.h>
@@ -17,7 +17,7 @@
 #include <bdatypes.h>
 #include <dvdmedia.h>
 #include <il21dec.h>
-#include <ddraw.h> /* DDSCAPS2, DDPIXELFORMAT */
+//#include <ddraw.h> /* DDSCAPS2, DDPIXELFORMAT */
 #ifndef _WINGDI_H
 #include <wingdi.h> /* BITMAPINFOHEADER */
 #endif
@@ -76,7 +76,7 @@ typedef struct _tag_AMVABeginFrameInfo{
 	LPVOID pOutputData;
 	DWORD dwSizeOutputData;
  } AMVABeginFrameInfo,*LPAMVABeginFrameInfo;
-typedef struct _tag_AMVACompBufferInfo{
+/*typedef struct _tag_AMVACompBufferInfo{
 	DWORD dwNumCompBuffers;
 	DWORD dwWidthToCreate;
 	DWORD dwHeightToCreate;
@@ -84,6 +84,7 @@ typedef struct _tag_AMVACompBufferInfo{
 	DDSCAPS2 ddCompCaps;
 	DDPIXELFORMAT ddPixelFormat;
 } AMVACompBufferInfo,*LPAMVACompBufferInfo;
+*/
 typedef struct _tag_AMVAEndFrameInfo{
 	DWORD dwSizeMiscData;
 	LPVOID pMiscData;
@@ -91,17 +92,18 @@ typedef struct _tag_AMVAEndFrameInfo{
 typedef struct _tag_AMVAInternalMemInfo{
 	DWORD dwScratchMemAlloc;
 } AMVAInternalMemInfo,*LPAMVAInternalMemInfo;
-typedef struct _tag_AMVAUncompBufferInfo{
+/*typedef struct _tag_AMVAUncompBufferInfo{
 	DWORD dwMinNumSurfaces;
 	DWORD dwMaxNumSurfaces;
 	DDPIXELFORMAT ddUncompPixelFormat;
 } AMVAUncompBufferInfo,*LPAMVAUncompBufferInfo;
- typedef struct _tag_AMVAUncompDataInfo{
+*/
+/*typedef struct _tag_AMVAUncompDataInfo{
 	DWORD dwUncompWidth;
 	DWORD dwUncompHeight;
 	DDPIXELFORMAT ddUncompPixelFormat;
 } AMVAUncompDataInfo,*LPAMVAUncompDataInfo;
-
+*/
 #ifdef __cplusplus
 }
 #endif

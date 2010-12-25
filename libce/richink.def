@@ -1,0 +1,5 @@
+LIBRARY RICHINK
+EXPORTS
+InitRichInkDLL
+StringInFile
+StringInMemFile

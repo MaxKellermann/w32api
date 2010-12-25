@@ -1,0 +1,12 @@
+LIBRARY CEMAPI
+EXPORTS
+FreeProws
+MAPIAllocateBuffer
+MAPIAllocateMore
+MAPIFreeBuffer
+MAPIInitialize
+MAPILogonEx
+MAPIUninitialize
+MAPI_GetStoreByName
+MAPI_GetTotalAttachmentBytes
+MAPI_SetAttachmentPath

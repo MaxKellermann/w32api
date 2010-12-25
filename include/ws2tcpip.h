@@ -37,11 +37,22 @@ extern "C" {
 /* This is also defined in winsock.h; value hasn't changed */
 #define	IP_OPTIONS  1
 
-#define	IP_HDRINCL  2
 /*
  * These are also be defined in winsock.h,
  * but values have changed for WinSock2 interface
  */
+#ifdef UNDER_CE
+/* Looks like CE needs the "old" values */
+#define IP_TOS			8
+#define IP_TTL			7
+#define IP_MULTICAST_IF		2
+#define IP_MULTICAST_TTL	3
+#define IP_MULTICAST_LOOP	4
+#define IP_ADD_MEMBERSHIP	5
+#define IP_DROP_MEMBERSHIP	6
+#define IP_DONTFRAGMENT		9
+#define	IP_HDRINCL  		9
+#else
 #define IP_TOS			3   /* old (winsock 1.1) value 8 */
 #define IP_TTL			4   /* old value 7 */
 #define IP_MULTICAST_IF		9   /* old value 2 */
@@ -50,6 +61,8 @@ extern "C" {
 #define IP_ADD_MEMBERSHIP	12  /* old value 5 */
 #define IP_DROP_MEMBERSHIP	13  /* old value 6 */
 #define IP_DONTFRAGMENT		14  /* old value 9 */
+#define	IP_HDRINCL  2
+#endif
 #define IP_ADD_SOURCE_MEMBERSHIP	15
 #define IP_DROP_SOURCE_MEMBERSHIP	16
 #define IP_BLOCK_SOURCE			17
@@ -294,7 +307,7 @@ struct addrinfo {
 	struct addrinfo  *ai_next;
 };
 
-#if (_WIN32_WINNT >= 0x0501)
+#if (_WIN32_WINNT >= 0x0501) || (_WIN32_WCE > 0x0400)
 void WSAAPI freeaddrinfo (struct addrinfo*);
 int WSAAPI getaddrinfo (const char*,const char*,const struct addrinfo*,
 		        struct addrinfo**);

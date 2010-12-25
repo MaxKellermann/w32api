@@ -10,7 +10,7 @@ extern "C" {
 #endif
 
 #ifndef RC_INVOKED
-#if (_WIN32_WINNT >= 0x0500)
+#if (_WIN32_WINNT >= 0x0500) || (_WIN32_WCE >= 0x0400)
 typedef enum 
 {
   NameUnknown = 0, 
@@ -22,7 +22,11 @@ typedef enum
   NameUserPrincipal = 8, 
   NameCanonicalEx = 9, 
   NameServicePrincipal = 10, 
+#ifdef _WIN32_WCE
+  NameWindowsCeLocal = 0x80000001
+#else
   NameDnsDomain = 12
+#endif
 } EXTENDED_NAME_FORMAT, *PEXTENDED_NAME_FORMAT;
 
 BOOLEAN WINAPI GetComputerObjectNameA(EXTENDED_NAME_FORMAT,LPSTR,PULONG);
@@ -43,7 +47,7 @@ BOOLEAN WINAPI TranslateNameW(LPCWSTR,EXTENDED_NAME_FORMAT,EXTENDED_NAME_FORMAT,
 #endif
 
 #endif /* ! RC_INVOKED */
-#endif /* _WIN32_WINNT >= 0x0500 */
+#endif /* _WIN32_WINNT >= 0x0500 || _WIN32_WCE >= 0x0400 */
 
 #ifdef __cplusplus
 }

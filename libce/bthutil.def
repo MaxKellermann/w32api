@@ -1,0 +1,13 @@
+LIBRARY BTHUTIL
+EXPORTS
+BthAnswerBondingReq
+BthDeviceChanged
+BthGetCachedHardwareStatus
+BthGetMode
+BthInitiateBonding
+BthSetLocalName
+BthSetMode
+DoInquiry
+GetDeviceByAddr
+GetDeviceByName
+GetDeviceList

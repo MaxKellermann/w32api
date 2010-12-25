@@ -1,0 +1,12 @@
+LIBRARY BTHLINK
+EXPORTS
+BTL_Close
+BTL_Deinit
+BTL_IOControl
+BTL_Init
+BTL_Open
+BTL_PowerDown
+BTL_PowerUp
+BTL_Read
+BTL_Seek
+BTL_Write

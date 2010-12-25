@@ -8,7 +8,7 @@
 extern "C" {
 #endif
 
-#if (_WIN32_WINNT >= 0x0501)
+#if (_WIN32_WINNT >= 0x0501) || (_WIN32_WCE >= 0x0500)
 typedef enum {
 	frrvErr = 3,
 	frrvErrNoDW = 4,

@@ -411,6 +411,10 @@ case $basic_machine in
 		basic_machine=c90-cray
 		os=-unicos
 		;;
+	cegcc)
+		basic_machine=arm-unknown
+		os=-cegcc
+		;;
 	convex-c1)
 		basic_machine=c1-convex
 		os=-bsd
@@ -1133,7 +1137,7 @@ case $os in
 	      | -ptx* | -coff* | -ecoff* | -winnt* | -domain* | -vsta* \
 	      | -udi* | -eabi* | -lites* | -ieee* | -go32* | -aux* \
 	      | -chorusos* | -chorusrdb* \
-	      | -cygwin* | -pe* | -psos* | -moss* | -proelf* | -rtems* \
+	      | -cygwin* | -pe* | -psos* | -moss* | -proelf* | -rtems* | -cegcc* \
 	      | -mingw32* | -linux-gnu* | -uxpv* | -beos* | -mpeix* | -udk* \
 	      | -interix* | -uwin* | -mks* | -rhapsody* | -darwin* | -opened* \
 	      | -openstep* | -oskit* | -conix* | -pw32* | -nonstopux* \

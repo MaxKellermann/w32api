@@ -213,24 +213,8 @@ typedef struct _NOTIFYICONDATAW {
 #endif
 } NOTIFYICONDATAW,*PNOTIFYICONDATAW;
 
-typedef struct _SHELLEXECUTEINFOA {
-	DWORD cbSize;
-	ULONG fMask;
-	HWND hwnd;
-	LPCSTR lpVerb;
-	LPCSTR lpFile;
-	LPCSTR lpParameters;
-	LPCSTR lpDirectory;
-	int nShow;
-	HINSTANCE hInstApp;
-	PVOID lpIDList;
-	LPCSTR lpClass;
-	HKEY hkeyClass;
-	DWORD dwHotKey;
-	HANDLE hIcon;
-	HANDLE hProcess;
-} SHELLEXECUTEINFOA,*LPSHELLEXECUTEINFOA;
-typedef struct _SHELLEXECUTEINFOW {
+#ifdef UNICODE
+typedef struct _SHELLEXECUTEINFO {
 	DWORD cbSize;
 	ULONG fMask;
 	HWND hwnd;
@@ -247,6 +231,25 @@ typedef struct _SHELLEXECUTEINFOW {
 	HANDLE hIcon;
 	HANDLE hProcess;
 } SHELLEXECUTEINFOW,*LPSHELLEXECUTEINFOW;
+#else
+typedef struct _SHELLEXECUTEINFO {
+	DWORD cbSize;
+	ULONG fMask;
+	HWND hwnd;
+	LPCSTR lpVerb;
+	LPCSTR lpFile;
+	LPCSTR lpParameters;
+	LPCSTR lpDirectory;
+	int nShow;
+	HINSTANCE hInstApp;
+	PVOID lpIDList;
+	LPCSTR lpClass;
+	HKEY hkeyClass;
+	DWORD dwHotKey;
+	HANDLE hIcon;
+	HANDLE hProcess;
+} SHELLEXECUTEINFOA,*LPSHELLEXECUTEINFOA;
+#endif
 typedef struct _SHFILEOPSTRUCTA {
 	HWND hwnd;
 	UINT wFunc;
@@ -308,19 +311,40 @@ BOOL WINAPI Shell_NotifyIconA(DWORD,PNOTIFYICONDATAA);
 BOOL WINAPI Shell_NotifyIconW(DWORD,PNOTIFYICONDATAW);
 int WINAPI ShellAboutA(HWND,LPCSTR,LPCSTR,HICON);
 int WINAPI ShellAboutW(HWND,LPCWSTR,LPCWSTR,HICON);
+#ifndef _WIN32_WCE
 HINSTANCE WINAPI ShellExecuteA(HWND,LPCSTR,LPCSTR,LPCSTR,LPCSTR,INT);
 HINSTANCE WINAPI ShellExecuteW(HWND,LPCWSTR,LPCWSTR,LPCWSTR,LPCWSTR,INT);
 BOOL WINAPI ShellExecuteExA(LPSHELLEXECUTEINFOA);
 BOOL WINAPI ShellExecuteExW(LPSHELLEXECUTEINFOW);
+#else /* _WIN32_WCE */
+BOOL WINAPI ShellExecuteEx(LPSHELLEXECUTEINFOW);
+#endif /* _WIN32_WCE */
 int WINAPI SHFileOperationA(LPSHFILEOPSTRUCTA);
 int WINAPI SHFileOperationW(LPSHFILEOPSTRUCTW);
 void WINAPI SHFreeNameMappings(HANDLE);
 DWORD WINAPI SHGetFileInfoA(LPCSTR,DWORD,SHFILEINFOA*,UINT,UINT);
+#ifndef _WIN32_WCE
 DWORD WINAPI SHGetFileInfoW(LPCWSTR,DWORD,SHFILEINFOW*,UINT,UINT);
+#else
+DWORD WINAPI SHGetFileInfo(LPCWSTR,DWORD,SHFILEINFOW*,UINT,UINT);
+#endif
 HRESULT WINAPI SHQueryRecycleBinA(LPCSTR, LPSHQUERYRBINFO);
 HRESULT WINAPI SHQueryRecycleBinW(LPCWSTR, LPSHQUERYRBINFO);
 HRESULT WINAPI SHEmptyRecycleBinA(HWND,LPCSTR,DWORD);
 HRESULT WINAPI SHEmptyRecycleBinW(HWND,LPCWSTR,DWORD);
+
+#if (_WIN32_WCE >= 0x300)
+BOOL WINAPI SHGetSpecialFolderPath(HWND,LPWSTR,int,BOOL);
+#endif
+
+#ifdef _WIN32_WCE
+BOOL WINAPI SHGetShortcutTarget(LPCTSTR,LPTSTR,int); 
+DWORD WINAPI SHCreateShortcut(LPTSTR,LPTSTR);
+#if (_WIN32_WCE >= 0x420)
+DWORD WINAPI SHCreateShortcutEx(LPTSTR,LPTSTR,LPTSTR,LPDWORD);
+#endif
+HBITMAP WINAPI SHLoadDIBitmap(LPCTSTR);
+#endif
 
 #if (_WIN32_WINNT >= 0x600)
 #define SHIL_LARGE 0x0
@@ -344,10 +368,14 @@ typedef SHFILEINFOW SHFILEINFO;
 #define FindExecutable FindExecutableW
 #define Shell_NotifyIcon Shell_NotifyIconW
 #define ShellAbout ShellAboutW
+#ifndef _WIN32_WCE
 #define ShellExecute ShellExecuteW
 #define ShellExecuteEx ShellExecuteExW
+#endif /* _WIN32_WCE */
 #define SHFileOperation SHFileOperationW
+#ifndef _WIN32_WCE
 #define SHGetFileInfo SHGetFileInfoW
+#endif
 #define SHQueryRecycleBin SHQueryRecycleBinW
 #define SHEmptyRecycleBin SHEmptyRecycleBinW
 

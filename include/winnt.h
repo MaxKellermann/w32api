@@ -25,6 +25,8 @@
 #define _MIPS_
 #elif defined(_M_M68K) && !defined(_68K_)
 #define _68K_
+#elif defined(_M_ARM) && !defined(ARM)
+#define ARM
 #endif
 
 #ifdef __cplusplus
@@ -273,6 +275,7 @@ typedef DWORD FLONG;
 #define FILE_ATTRIBUTE_DIRECTORY		0x00000010
 #define FILE_ATTRIBUTE_ARCHIVE			0x00000020
 #define FILE_ATTRIBUTE_DEVICE			0x00000040
+#define FILE_ATTRIBUTE_INROM			0x00000040
 #define FILE_ATTRIBUTE_NORMAL			0x00000080
 #define FILE_ATTRIBUTE_TEMPORARY		0x00000100
 #define FILE_ATTRIBUTE_SPARSE_FILE		0x00000200
@@ -280,6 +283,7 @@ typedef DWORD FLONG;
 #define FILE_ATTRIBUTE_COMPRESSED		0x00000800
 #define FILE_ATTRIBUTE_OFFLINE			0x00001000
 #define FILE_ATTRIBUTE_NOT_CONTENT_INDEXED	0x00002000
+#define FILE_ATTRIBUTE_ROMMODULE		0x00002000
 #define FILE_ATTRIBUTE_ENCRYPTED		0x00004000
 #define FILE_ATTRIBUTE_VIRTUAL			0x00010000
 #define FILE_ATTRIBUTE_VALID_FLAGS		0x00017fb7
@@ -1041,6 +1045,7 @@ typedef DWORD FLONG;
 #define PAGE_EXECUTE_WRITECOPY	0x0080
 #define PAGE_GUARD		0x0100
 #define PAGE_NOCACHE		0x0200
+#define PAGE_PHYSICAL		0x0400
 #define MEM_COMMIT           0x1000
 #define MEM_RESERVE          0x2000
 #define MEM_DECOMMIT         0x4000
@@ -1602,6 +1607,10 @@ typedef DWORD FLONG;
 #define DLL_PROCESS_ATTACH	1
 #define DLL_THREAD_ATTACH	2
 #define DLL_THREAD_DETACH	3
+#ifdef	_WIN32_WCE
+#define	DLL_PROCESS_EXITING	4
+#define	DLL_SYSTEM_STARTED	5
+#endif
 #define DBG_CONTINUE 0x10002
 #define DBG_TERMINATE_THREAD 0x40010003
 #define DBG_TERMINATE_PROCESS 0x40010004
@@ -1712,6 +1721,7 @@ typedef DWORD FLONG;
 #define VER_PLATFORM_WIN32s 0
 #define VER_PLATFORM_WIN32_WINDOWS 1
 #define VER_PLATFORM_WIN32_NT 2
+#define	VER_PLATFORM_WIN32_CE 3
 #define VER_NT_WORKSTATION 1
 #define VER_NT_DOMAIN_CONTROLLER 2
 #define VER_NT_SERVER 3
@@ -3926,6 +3936,8 @@ ULONGLONG WINAPI VerSetConditionMask(ULONGLONG,DWORD,BYTE);
 	(TypeBitMask), (ComparisonType)))
 #endif
 
+#ifndef _WIN32_WCE
+
 #ifdef _X86_
 #if defined(__GNUC__)
 #if (__GNUC__ >= 3)
@@ -4022,6 +4034,14 @@ struct _TEB * NtCurrentTeb(void);
         
 #endif /* __GNUC__ */
 #endif /* _X86_ */
+#endif /* _WIN32_WCE */
+
+#ifdef _WIN32_WCE
+typedef unsigned int size_t;
+#ifndef offsetof
+#define offsetof(type, ident) ((size_t)&(((type*)0)->ident))
+#endif
+#endif
 
 #endif /* RC_INVOKED */
 

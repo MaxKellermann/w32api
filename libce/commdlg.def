@@ -1,0 +1,7 @@
+LIBRARY COMMDLG
+EXPORTS
+ChooseColor
+ChooseFontW
+CommDlgExtendedError
+PageSetupDlgW
+PrintDlg

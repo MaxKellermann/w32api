@@ -1,0 +1,711 @@
+2010-03-14 Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/ws2tcpip.h (freeaddrinfo, getaddrinfo, getnameinfo) : Define
+	also for Windows CE.
+
+2010-02-10  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winuser.h (MonitorFromPoint, MonitorFromRect,
+	MonitorFromWindow) : Define for Windows CE also.
+
+2010-02-03  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/phone.h, include/sms.h, include/simmgr.h: Add with minimal
+	set of definitions.
+
+2010-01-29  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/wingdi.h (TransparentBlt): Add dependency on _WIN32_WCE.
+
+2009-12-10  Pedro Alves  <pedroalves@users.sourceforge.net>
+
+	* include/winbase.h (struct _BY_HANDLE_FILE_INFORMATION): Add
+	missing `dwOID' field on CE.
+
+2009-10-22  Danny Backx  <dannybackx@users.sourceforge.net>
+	    Ivan Maidanski <ivmai@mail.ru>
+
+	* include/winbase.h, include/kfuncs.h (DebugBreak): Define a function
+	only when not CE. If CE, define as macros in kfuncs.h for arm and x86.
+
+2009-09-07  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/shlobj.h (IShellExecuteHookA): Replace UNDER_CE guard by
+	_WIN32_WCE.
+	* libce/coredll.def: Fix alphabetic order.
+
+2009-09-07  Pedro Alves  <pedroalves@users.sourceforge.net>
+
+	Merge from upstream.  Now at 3.13 + patches.
+
+2009-09-07  Pedro Alves  <pedroalves@users.sourceforge.net>
+
+	* Makefile.in (install-headers): New rule.
+
+2009-08-30  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/errorrep.h: Provide with WinCE > 5 too.
+	* include/winsock.h (AF_BT): Copy from AF_BTH.
+
+2009-08-30  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/shlobj.h (IShellExecuteHookA): Guard with UNDER_CE.
+
+2009-06-11  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/shellapi.h (struct _SHELLEXECUTEINFO): Define instead of
+	its struct _SHELLEXECUTEINFO(A|W) brothers.
+
+2009-06-11  Vincent Richomme  <forumer@smartmobili.com>
+
+	* include/mapidefs.h, include/pimstore.h: New files.
+
+2009-06-06  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winbase.h (ExitProcess): Change type of parameter to UINT.
+	* include/winbase.h (STACK_SIZE_PARAM_IS_A_RESERVATION): Define with
+	the value found on MSDN.
+
+2009-05-29  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winnt.h (DLL_PROCESS_EXITING, DLL_SYSTEM_STARTED)
+	(FILE_ATTRIBUTE_ROMMODULE, FILE_ATTRIBUTE_INROM): Define.
+	* include/dbgapi.h: New file.
+	* include/dbgapi (DEBUGREGISTER, RETAILREGISTERZONES, DEBUGCHK)
+	(RETAILMSG, ASSERT): Define.
+	* include/windows.h (dbgapi.h): Include.
+
+2009-05-27  Stefan Klug  <Klug.Stefan@gmx.de>
+
+	* include/winuser.h : Define the right GetProp function, this was
+	omitted in the 2009-04-28 fix.
+
+2009-05-22  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winsock2.h (DSCP_TRAFFIC_TYPE): Add typedef for enum.
+	* include/winsock2.h (AF_BT): Add, copy of AF_BTH.
+	* include/ws2tcpip.h: Define some macros using "old" winsock 1.1
+	values for CE.
+
+2009-05-18  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winbase.h (CRITICAL_SECTION): Define differently for CE.
+	* include/winbase.h (ExitProcess): Define as an inline function, not
+	a macro.
+
+2009-05-15  Pierre Ynard  <linkfanel@yahoo.fr>
+
+	* include/kfuncs.h (ResetEvent, SetEvent): Fix definitions that got
+	mixed up in recent commit.
+
+2009-05-13  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/kfuncs.h (PUserKData): Define as different values for
+	ARM and other processors.  Add references to websites that have
+	this information.
+
+2009-04-28  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winuser.h (GetMenu): Remove for CE.
+	* include/winuser.h (SetProp*, GetProp*, RemoveProp*): Define only
+	the right ones for CE, see bug #2328033.
+
+2009-04-28  Ryan Raasch  <ryan.raasch@gmail.com>
+
+	* include/strmif.h (IEnumPins, IEnumMediaTypes): Define.
+
+2009-04-20  Johnny Willemsen  <jwillemsen@remedy.nl>
+
+	* include/winbase.h (CeSetThreadPriority, CeGetThreadPriority):
+	Declare.
+
+2009-04-15  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winbase.h: Include inlined functions only from one file.
+
+2009-04-11  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/windefs.h, include/kfuncs.h: change inlined functions to
+	static, include them only from one file.
+
+2009-04-10  Marcel Smit  <msmit@remedy.nl>
+
+	* include/cegcc.h.in (__CEGCC_VERSION__): Add backslashes at the
+	end of lines to allow line continuation.
+
+	* include/kfuncs.h (TlsAlloc, TlsFree, PulseEvent, ResetEvent)
+	(SetEvent, GetCurrentThread, GetCurrentProcess)
+	(GetCurrentThreadId, GetCurrentProcessId): Change them from macros
+	to inline functions.
+
+2009-02-07  Pedro Alves  <pedroalves@users.sourceforge.net>
+
+	Merge from upstream.  Now at 3.12.
+
+2009-02-01  Ryan Raasch  <ryan.raasch@gmail.com>
+
+	* libce/directx/strmiids.c: New file, copy from src/lib/directx.
+	* include/bdatypes.h, include/dshow.h, include/strmif.h: Make the
+	UUIDs extern so executables can link.
+
+2009-01-28  Ryan Raasch  <ryan.raasch@gmail.com>
+
+	* libce/coredll.def, include/winbase.h: Add various definitions to
+	support EnumDeviceInterfaces, EnumDevices, FindFirstDevice,
+	FindNextDevice, GetDeviceInformationByDeviceHandle,
+	GetDeviceInformationByFileHandle.
+
+2009-01-27  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winsock.h, include/winsock2.h: Add various macros to
+	define constants used for Bluetooth.
+
+2009-01-25  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/pm.h: Merge with version submitted by Lars Munch.
+	* include/winbase.h: Move SetSystemPowerState to pm.h for CE.
+
+2009-01-11  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/pm.h, include/msgqueue.h: Add.
+
+2008-10-07  Pedro Alves  <pedroalves@users.sourceforge.net>
+
+	* include/secext.h (EXTENDED_NAME_FORMAT): Allow on _WIN32_WCE >=
+	0x400.  Add NameWindowsCeLocal on CE and hide NameDnsDomain.
+
+2008-10-05  Pedro Alves  <pedroalves@users.sourceforge.net>
+
+	* include/shellapi.h (SHCreateShortcut): Change return type to
+	DWORD.
+	(SHCreateShortcutEx): Declare.
+
+2008-09-25  Pedro Alves  <pedroalves@users.sourceforge.net>
+
+	* libce/Makefile.in (inst_includedir, inst_libdir) [!cegcc]:
+	Unbreak mingw32ce.
+
+2008-09-24  Pedro Alves  <pedroalves@users.sourceforge.net>
+
+	* config.sub: Add support for cegcc.
+	* libce/Makefile.in (inst_includedir, inst_libdir) [cegcc]: Set to
+	a w32api subdir.
+	(EXTRA_INCLUDES) [cegcc]: Point at newlib headers.
+
+2008-09-04  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winbase.h: Fix SetSystemPowerState as indicated by Klaus
+	Rechert.
+
+2008-06-20  Eric House  <eehouse@eehouse.org>
+
+	* libce/aygshell.def (SHSendBackToFocusWindow): Define.
+	* include/aygshell.h (SHSendBackToFocusWindow): Declare.
+	(SHMBOF_NODEFAULT, SHMBOF_NOTIFY, SHCMBM_OVERRIDEKEY, VK_TBACK):
+	Define.
+
+2008-06-20  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/aygshell.h: Include prsht.h.
+
+2008-06-20  Eric House <eehouse@eehouse.org>
+
+	* cegcc/importlibs/defs/aygshell.def, w32api/include/aygshell.h,
+	w32api/libce/aygshell.def (SHSendBackToFocusWindow, SHMBOF_NODEFAULT,
+	SHMBOF_NOTIFY, SHCMBM_OVERRIDEKEY, VK_TBACK) : Define.
+
+2008-05-22  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/projects.h: Add.
+
+2008-04-13  Danny Backx  <dannybackx@users.sourceforge.net>
+	* include/commctrl.h (CommandBar_AddButtons): Change from a
+	function definition into a macro.
+	* include/prsht.h (PSH_MAXIMIZE): Define.
+	* include/winioctl.h (FILE_DEVICE_HAL, FILE_DEVICE_SERVICE,
+	IOCTL_SERVICE_START, IOCTL_SERVICE_STOP, IOCTL_SERVICE_STATUS,
+	IOCTL_SERVICE_CONNECTION): Define.
+
+
+2008-04-13  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winuser.h (SystemIdleTimerReset): Define.
+
+2008-04-13  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/notify.h: Add.
+	* include/aygshell.h (SHSetAppKeyWndAssoc): Define.
+	* include/commctrl.h (CommandBar_AddButtons): Define.
+
+2008-04-13  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/aygshell.h: Add <sipapi.h> include.
+
+2008-02-21  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winnt.h (VER_PLATFORM_WIN32_CE): Define.
+
+2008-02-17  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/aygshell.h (SHInitExtraControls): Move into the extern "C"
+	construction.
+	* include/aygshell.h (SHDoneButton, WS_NONAVDONEBUTTON, SHDB_SHOW,
+	SHDB_HIDE): Define.
+
+2008-01-09  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/aygshell.h (SIPINFO): Remove, this was a duplicate.
+
+2008-01-06  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/aygshell.h (SIPSTATE,SHSipPreference): Define.
+	* include/aygshell.h (SIPINFO): Define.
+	* include/aygshell.h (SHCMBM_GETSUBMENU,SETSUBMENU): Define.
+
+2007-12-25  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* configure.in (SUBDIRS): Set depending on $host_alias instead of
+	on $host.
+	* Makefile.in: Capture $build_alias, $host_alias, $target_alias
+	verbatim from config.  Capture $build, $host, $target from config.
+	Set $tooldir using $host_alias, not $target_alias.
+	* libce/Makefile.in: Get $build, $build_alias, $host, $host_alias,
+	$target and $target_alias from config.  Use $build, $host, $target
+	instead of the aliases to detect a native build.  Use $host_alias
+	instead of $target_alias to set the $tooldir.
+	* configure: Regenerate.
+
+2007-12-25  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* configure.in (SUBDIRS): Set depending on host, and pass it to
+	the Makefile.
+	* Makefile.in (SUBDIRS): Get from configure.
+	* libce/Makefile.in: Hardcode CE conditions.
+	* configure: Regenerate.
+
+2007-12-21  Pavel Chernikov  <pchernik@gmail.com>
+
+	* include/winuser.h (VK_APP1, VK_APP2, VK_APP3, VK_APP4)
+	(VK_APP5, VK_APP6): Define.
+
+2007-12-07  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/icmpapi.h: Add new file.
+
+2007-12-01  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/aygshell.h: Add SHInitExtraControls.
+
+2007-11-29  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/cegcc.h.in: Add file to provide version tracking macros.
+
+2007-11-25  Pedro Alves  <pedro_alves@portugalmail.pt>
+	    Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* libce/icmplib.def: Remove proxy for icmplib, MSDN says it's a
+	static library only.
+
+2007-11-16  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/shlwapi.h (PathCombine): Define without W or A suffix
+	for Windows CE.
+
+2007-11-15  Jacek M. Holeczek <holeczek@us.edu.pl>
+
+	* include/aygshell.h (SHLoadImageFile, SHLoadImageResource):
+	Define.
+	* include/sipapi.h (SipShowIM, SipGetCurrentIM, SipSetCurrentIM):
+	Define.
+
+2007-11-15  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/aygshell.h (SHCMBM_GETSUBMENU): Define.
+
+2007-11-14  Matthew Kille  <matt@amiga.com>
+
+	* include/winbase.h (THREAD_PRIORITY_TIME_CRITICAL)
+	(THREAD_PRIORITY_HIGHEST, THREAD_PRIORITY_ABOVE_NORMAL)
+	(THREAD_PRIORITY_NORMAL, THREAD_PRIORITY_BELOW_NORMAL)
+	(THREAD_PRIORITY_LOWEST, THREAD_PRIORITY_IDLE): Correct values for
+	Windows CE.
+	(THREAD_PRIORITY_ABOVE_IDLE): Define.
+
+2007-10-20  Jacek M. Holeczek <holeczek@us.edu.pl>
+
+	* include/winuser.h (ChangeDisplaySettings): Define differently
+	for CE than for other Windows versions.
+	* include/shellapi.h (ShellExecuteEx, ShellExecute): Define only
+	those functions that exist in the CE API.
+	* include/wingdi.h (struct _devicemodeW, DEVMODEW, LPDEVMODEW)
+	(PDEVMODEW): Define this structure, the typedefs, and the
+	constants it requires differently for Windows CE than for other
+	Windows platforms.
+
+2007-10-20  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winuser.h (IsDlgButtonChecked): Change to a macro for
+	Windows CE.
+
+2007-10-16  Erik van Pienbroek  <erik@vanpienbroek.nl>
+
+	* include/commdlg.h (ChooseColor): New declaration, and hide
+	macro.
+	(ChooseColorA, ChooseColorW): Hide.
+	* include/shellapi.h (SHLoadBIBitmap): Declare.
+	* include/winbase.h (_SYSTEM_POWER_STATUS, _SYSTEM_POWER_STATUS)
+	(LPSYSTEM_POWER_STATUS, GetSystemPowerStatus): Hide.
+	* include/winuser.h (EnumDisplaySettings, EnumDisplayDevices): New
+	declarations, and hide macros.
+	(EnumDisplaySettingsA, EnumDisplaySettingsW)
+	(EnumDisplaySettingsExA, EnumDisplaySettingsExW)
+	(EnumDisplayDevicesA, EnumDisplayDevicesW): Hide.
+	(TrackPopupMenu): Define in terms of TrackPopupMenuEx.
+
+2007-09-19  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/service.h (ServiceAddPort): Fix type of szRegWritePath
+	parameter, MSDN is wrong.
+	* include/service.h: Use 400, not 0x0400 to conditionally compile.
+
+2007-08-09  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/service.h (SERVICE_STATE_OFF, SERVICE_STATE_ON)
+	(SERVICE_STATE_STARTING_UP, SERVICE_STATE_SHUTTING_DOWN)
+	(SERVICE_STATE_UNLOADING, SERVICE_STATE_UNINITIALIZED)
+	(SERVICE_STATE_UNKNOWN): Define values for dwServiceState field.
+
+2007-08-09  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/service.h: New file. Declares functions and a structure as
+	documented on MSDN. Used only on CE > 4.
+	* include/service.h (ServiceEnumInfo): New struct.
+
+	* include/service.h (RegisterService, ActivateService)
+	(DeregisterService, EnumServices, GetServiceHandle)
+	(ServiceAddPort, ServiceClosePort, ServiceIoControl)
+	(ServiceUnbindPorts): New functions.
+
+2007-08-06  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/aygshell.h (SHIDIM_FLAGS, SHIDIF_DONEBUTTON)
+	(SHIDIF_SIZEDLG, SHIDIF_SIZEDLGFULLSCREEN, SHIDIF_SIPDOWN)
+	(SHIDIF_FULLSCREENNOMENUBAR, SHIDIF_EMPTYMENU): New defines.
+	(SHINITDLGINFO): New struct.
+	(SHInitDialog): New function.
+
+2007-08-06  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/sipapi.h: New file.
+	* include/aygshell.h (SIPINFO): Moved to new sipapi.h.
+
+2007-08-06  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/winbase.h (GetCharABCWidths): Remove the W suffix on
+	WinCE.
+
+2007-08-06  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/winbase.h (LocalFlags, LocalHandle, LocalLock)
+	(LocalUnlock): Define for WinCE.
+
+2007-08-06  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/winbase.h (LocalLock):
+	Change return type to LPVOID as per MSDN.
+
+2007-08-01  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/commdlg.h (PrintDlg): Remove the W suffix on WinCE.
+	* include/shellapi.h (ShellExecuteEx, ShellGetFileInfo): Likewise.
+
+2007-08-01  Steven Hicks  <crashoverride025@gmail.com>
+
+	* include/winbase.h (DeregisterDevice, RegisterDevice): Declare.
+
+2007-06-10  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/winbase.h (ActivateDevice, ActivateDeviceEx)
+	(DeactivateDevice): Declare.
+	* include/devload.h: New file.
+
+2007-05-31  Carsten Sørensen  <surfsmurf@rift.dk>
+
+	* include/winuser.h (SYSTEM_COLOR_BASE_OFFSET): Define.
+	(COLOR_3DDKSHADOW, COLOR_3DFACE, COLOR_3DHILIGHT)
+	(COLOR_3DHIGHLIGHT, COLOR_3DLIGHT, COLOR_BTNHILIGHT)
+	(COLOR_3DSHADOW, COLOR_ACTIVEBORDER, COLOR_ACTIVECAPTION,
+	(COLOR_APPWORKSPACE, COLOR_BACKGROUND, COLOR_DESKTOP)
+	(COLOR_BTNFACE, COLOR_BTNHIGHLIGHT, COLOR_BTNSHADOW)
+	(COLOR_BTNTEXT, COLOR_CAPTIONTEXT, COLOR_GRAYTEXT)
+	(COLOR_HIGHLIGHT, COLOR_HIGHLIGHTTEXT, COLOR_INACTIVEBORDER,
+	(COLOR_INACTIVECAPTION, COLOR_INACTIVECAPTIONTEXT, COLOR_INFOBK)
+	(COLOR_INFOTEXT, COLOR_MENU, COLOR_MENUTEXT, COLOR_SCROLLBAR)
+	(COLOR_WINDOW, COLOR_WINDOWFRAME, COLOR_WINDOWTEXT)
+	(COLOR_HOTLIGHT, COLOR_GRADIENTACTIVECAPTION)
+	(COLOR_GRADIENTINACTIVECAPTION): Add SYSTEM_COLOR_BASE_OFFSET.
+
+2007-05-31  Carsten Sørensen  <surfsmurf@rift.dk>
+
+	* include/commctrl.h (tagREBARBANDINFOA, tagREBARBANDINFOW)
+	[_WIN32_WCE]: Hide cxHeader field.
+	(CMDBAR_HELP, CMDBAR_OK): Define.
+	(tagCOMMANDBANDSRESTOREINFO, COMMANDBANDSRESTOREINFO,
+	LPCOMMANDBANDSRESTOREINFO): Define.
+	(CommandBands_AddAdornments, CommandBands_AddBands,
+	CommandBands_Create, CommandBands_GetCommandBar,
+	CommandBands_GetRestoreInformation, CommandBands_Show): Define.
+
+2007-05-31  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/commctrl.h: Formatting fixes.
+	(CommandBar_InsertButton): Change return type to BOOL.
+	(CommandBar_Destroy): Change return type to void.
+
+2007-05-30  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/mmsystem.h (waveOutGetDevCapsW, waveOutGetErrorTextW)
+	(waveInGetDevCapsW, waveInGetErrorTextW, mixerGetDevCapsW)
+	(mixerGetLineInfoW, mixerGetLineControlsW)
+	(mixerGetControlDetailsW) [_WIN32_WCE]: Define as waveOutGetDevCaps,
+	waveOutGetErrorText, waveInGetDevCaps, waveInGetErrorText,
+	mixerGetDevCaps, mixerGetLineInfo, mixerGetLineControls and
+	mixerGetControlDetails.
+
+	(waveOutGetDevCaps, waveOutGetErrorText, waveInGetDevCaps)
+	(waveInGetErrorText, mixerGetDevCaps, mixerGetLineInfo)
+	(mixerGetLineControls, mixerGetControlDetails) [_WIN32_WCE]: Don't
+	map to the W counterparts.
+
+2007-03-26  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* libce/coredll.def: Add 'keep in sync' warning.
+
+2007-03-26  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/winuser.h (WS_EX_CAPTIONOKBTN): Define.
+	* include/winbase.h (GlobalAlloc, GlobalFree)
+	(GlobalReAlloc, GlobalHandle, GlobalLock)
+	(GlobalUnlock, GlobalSize, GlobalFlags): Map to
+	LocalAlloc, LocalFree, LocalReAlloc,
+	LocalHandle, LocalLock, LocalUnlock,
+	LocalSize and LocalFlags respectivelly.
+
+2007-02-26  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/winbase.h (DETACHED_PROCESS): Hide.
+	(CREATE_NEW_PROCESS_GROUP): Hide.
+	(CREATE_UNICODE_ENVIRONMENT): Hide.
+
+2007-02-05  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* libce/Makefile.in: Fix order for 'all' rule.
+
+2007-02-05  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	Update from upstream.  Note: Upstream version is now 3.8.
+	* configure: Regenerate.
+
+2007-02-04  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* libce/Makefile.in (inst_includedir, inst_libdir): Set them
+	correctly for *wince* cases.
+
+2007-02-01  Nuno Lucas  <ntlucas@gmail.com>
+
+	* include/todaycmn.h: Create this file based on MSDN documentation
+	http://msdn2.microsoft.com/en-us/library/aa454291.aspx
+
+2007-01-31  Nuno Lucas  <ntlucas@gmail.com>
+
+	* include/winuser.h: Define MsgWaitForMultipleObjects as a macro that
+	calls MsgWaitForMultipleObjectsEx as described on MSDN.
+	* include/wingdi.h  Define only the right function GetCharWidth32
+	for Windows CE, not its similarly named friends.
+
+2006-12-18  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/winnt.h (_M_ARM, ARM): Remove.
+	* include/windows.h (_M_ARM, ARM): Likewise.
+
+2006-12-18  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* libce: New subdir.
+	(libce/CellCore.def, libce/Makefile.in, libce/VBarCall.def)
+	(libce/VoiceCtl.def, libce/WAP.def, libce/ativscp-uuid.c)
+	(libce/authhlp.def, libce/aygshell.def, libce/btd.def)
+	(libce/bthguid.def, libce/bthlink.def, libce/bthutil.def)
+	(libce/cecap.def, libce/cemapi.def, libce/ceosutil.def)
+	(libce/ceshell.def, libce/cguid-uuid.c, libce/comcat-uuid.c)
+	(libce/commctrl.def, libce/commdlg.def, libce/conncfg.def)
+	(libce/coredll.def, libce/crypt32.def, libce/cxport.def)
+	(libce/devguid.c, libce/dmoguids.def, libce/doclist.def)
+	(libce/docobj-uuid.c, libce/exdisp-uuid.c, libce/extras-uuid.c)
+	(libce/grognard.def, libce/gx.def, libce/hlguids-uuid.c)
+	(libce/hlink-uuid.c, libce/htmlview.def, libce/httpd.def)
+	(libce/icmplib.def, libce/imaging.def, libce/imgdecmp.def)
+	(libce/inkx.def, libce/iphlpapi.def, libce/largeint.c)
+	(libce/mlang-uuid.c, libce/mmtimer.def, libce/mqoa.def)
+	(libce/msdmo.def, libce/mshtml-uuid.c, libce/msmqrt.def)
+	(libce/msscript.def, libce/msxml-uuid.c, libce/msxml.def)
+	(libce/msxmlguid.def, libce/ndis.def, libce/note_prj.def)
+	(libce/ntcompat.def, libce/oaidl-uuid.c, libce/objidl-uuid.c)
+	(libce/objsafe-uuid.c, libce/ocidl-uuid.c, libce/ole32.def)
+	(libce/oleacc-uuid.c, libce/oleaut32.def, libce/olectlid-uuid.c)
+	(libce/oleidl-uuid.c, libce/phone.def, libce/pimstore.def)
+	(libce/pndtapi.def, libce/pushprxy.def, libce/res.rc)
+	(libce/richink.def, libce/secur32.def, libce/servprov-uuid.c)
+	(libce/shell32.c, libce/sms.def, libce/strmiids.def, libce/test.c)
+	(libce/toolhelp.def, libce/unknwn-uuid.c, libce/urlmon-uuid.c)
+	(libce/urlmon.def, libce/webview.def, libce/wininet.def)
+	(libce/winsock.def, libce/wmlview.def, libce/ws2.def)
+	(libce/ws2_32.c, libce/wsp.def, libce/wvuuid.def): New files.
+	* Makefile.in: Get/Pass some more vars. Build libce/ on wince.
+	* aclocal.m4 (LIB_AC_PROG_CC_GNU, LIB_AC_PROG_CC)
+	(LIB_AC_PROG_CXX): Define.
+	* configure.in: Use LIB_AC_PROG_CC instead of AC_CHECK_TOOL.
+	Output libce/Makefile.
+	* configure: Regenerate.
+
+2006-12-02  Kevin O'Connor  <kevin@koconnor.net>
+
+	* include/winbase.h: Add SYSTEM_POWER_STATUS_EX structure.
+	Add GetSystemPowerStatusEx function definition.
+
+2006-11-28  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/aygshell.h (IDM_SHAREDNEW, IDM_SHAREDNEWDEFAULT): Define.
+
+	* include/aygshell.h (NOMENU): Define.
+
+	* include/aygshell.h (IDS_SH*): Define, values from the Boling book.
+
+2006-11-26  Kevin O'Connor  <kevin@koconnor.net>
+
+	* include/winbase.h: Add SYSTEM_POWER_STATUS_EX2 structure.
+	Add GetSystemPowerStatusEx2 function definition.
+
+2006-11-26  Kevin O'Connor  <kevin@koconnor.net>
+
+	* include/tlhelp32.h (MODULEENTRY32): szModule is of MAX_PATH
+	size on CE.
+
+	* include/tlhelp32.h: define TH32CS_GETALLMODS.
+
+2006-11-26  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/aygshell.h (SHRGINFO, SHRecognizeGesture): Define.
+
+2006-11-22  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/commdlg.h (CHOOSECOLOR): Fix type of hInstance field as
+	described in http://msdn2.microsoft.com/en-us/library/ms959872.aspx .
+	This field appears to have an inconsistent type definition in other
+	versions of Windows.
+
+2006-11-19  Kevin O'Connor  <kevin@koconnor.net>
+
+	* include/tlhelp32.h (PROCESSENTRY32, THREADENTRY32)
+	(MODULEENTRY32): Update fields.
+
+2006-11-18  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winbase.h (lstrcpy): Fix typo.
+
+2006-11-12  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/winuser.h (GetSystemMenu): Implement as macro.
+
+2006-11-12  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/winuser.h (DrawIcon): Implement in terms of DrawIconEx.
+
+2006-11-12  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/wingdi.h (GetTextExtentPoint32, GetTextExtentPointW):
+	Implement in terms of GetTextExtentExPointW.
+
+2006-11-12  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/shlobj.h (SHGetSpecialFolderPath): In Windows CE it is
+	declared ...
+	* include/shellapi.h (SHGetSpecialFolderPath): ... here.
+	(SHGetShortcutTarget, SHCreateShortcut): Declare.
+
+2006-11-12  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/winnt.h (GetCurrentFiber, GetFiberData,
+	GetCurrentFiber, GetFiberData, NtCurrentTeb): There is no Fiber
+	support in Windows CE. Hide the functions.
+
+2006-11-12  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/commctrl.h (IMAGELISTDRAWPARAMS): There are no fState,
+	Frame or crEffect members in CE version.
+	(ImageList_Duplicate, ImageList_SetImageCount, ImageList_Copy,
+	ImageList_DrawIndirect): Enable on Windows CE >= 2.
+
+2006-11-12  Kevin O'Connor  <kevin@koconnor.net>
+
+	* include/winuser.h (SPI_GETOEMINFO, SPI_GETPLATFORMTYPE): Define.
+
+2006-11-12  Kevin O'Connor  <kevin@koconnor.net>
+
+	* include/tlhelp32.h (CloseToolhelp32Snapshot): Define.
+	CE's Toolhelp functions/structures although wide, don't take the
+	W suffix. Adapt.
+	* include/winnt.h (PAGE_PHYSICAL): Define.
+	* include/winbase.h (GetStoreInformation, CeSetThreadQuantum,
+	LockResource): Define.
+	* include/winuser.h (CheckDlgButton): Define in terms of
+	SendDlgItemMessage.
+	(CreateDialogParamW): Define using CreateDialogIndirectParamW.
+
+2006-11-12  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/winnt.h (_M_ARM, ARM): Translate from gcc target defines.
+	* include/windows.h (_M_ARM, ARM): Likewise.
+
+2006-11-11  Danny Backx <dannybackx@users.sourceforge.net>
+
+	* include/aygshell.h (WC_SIPPREF): Define.
+	* include/todaycmn.h: Clear the contents of this file,
+	it was tainted. We must do clean work to create a file
+	such as this one, so I'm leaving the (empty) file as a placeholder.
+
+2006-11-06  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/commctrl.h (LVCF_IMAGE, LVCF_ORDER): Also declare on
+	Windows CE >= 2.
+	(LVCOLUMNW): Use the version with iImage and iOrder
+	on Windows CE >= 2.
+
+2006-11-02  Kevin O'Connor  <kevin@koconnor.net>
+
+	* include/winuser.h (DialogBoxParamW): Implement on terms of
+	DialogBoxIndirectParamW.
+
+2006-11-01  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/todaycmn.h: Add file.
+
+2006-11-01  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winbase.h (lstrcpy, lstrcat, lstrlen): Add includes
+	to define these.
+
+2006-10-29  Danny Backx  <dannybackx@users.sourceforge.net>
+
+	* include/winuser.h (WS_EX_NODRAG): Define.
+
+2006-10-16  Pedro Alves  <pedro_alves@portugalmail.pt>
+
+	* include/kfuncs.h (EventModify): Declare.
+	(TlsCall): Add WINBASEAPI and WINAPI to declaration.
+
+Local Variables:
+mode: change-log
+left-margin: 8
+fill-column: 74
+version-control: never
+End:

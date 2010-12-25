@@ -175,14 +175,18 @@ extern "C" {
 #define DEBUG_PROCESS			0x00000001
 #define DEBUG_ONLY_THIS_PROCESS		0x00000002
 #define CREATE_SUSPENDED		0x00000004
+#ifndef _WIN32_WCE
 #define DETACHED_PROCESS		0x00000008
+#endif
 #define CREATE_NEW_CONSOLE		0x00000010
 #define NORMAL_PRIORITY_CLASS		0x00000020
 #define IDLE_PRIORITY_CLASS		0x00000040
 #define HIGH_PRIORITY_CLASS		0x00000080
 #define REALTIME_PRIORITY_CLASS		0x00000100
+#ifndef _WIN32_WCE
 #define CREATE_NEW_PROCESS_GROUP	0x00000200
 #define CREATE_UNICODE_ENVIRONMENT	0x00000400
+#endif
 #define CREATE_SEPARATE_WOW_VDM		0x00000800
 #define CREATE_SHARED_WOW_VDM		0x00001000
 #define CREATE_FORCEDOS			0x00002000
@@ -264,6 +268,16 @@ extern "C" {
 #define GET_TAPE_DRIVE_INFORMATION 1
 #define SET_TAPE_MEDIA_INFORMATION 0
 #define SET_TAPE_DRIVE_INFORMATION 1
+#ifdef _WIN32_WCE
+#define THREAD_PRIORITY_TIME_CRITICAL 0
+#define THREAD_PRIORITY_HIGHEST 1
+#define THREAD_PRIORITY_ABOVE_NORMAL 2
+#define THREAD_PRIORITY_NORMAL 3
+#define THREAD_PRIORITY_BELOW_NORMAL 4
+#define THREAD_PRIORITY_LOWEST 5
+#define THREAD_PRIORITY_ABOVE_IDLE 6
+#define THREAD_PRIORITY_IDLE 7
+#else
 #define THREAD_PRIORITY_ABOVE_NORMAL 1
 #define THREAD_PRIORITY_BELOW_NORMAL (-1)
 #define THREAD_PRIORITY_HIGHEST 2
@@ -271,6 +285,7 @@ extern "C" {
 #define THREAD_PRIORITY_LOWEST (-2)
 #define THREAD_PRIORITY_NORMAL 0
 #define THREAD_PRIORITY_TIME_CRITICAL 15
+#endif
 #define THREAD_PRIORITY_ERROR_RETURN 2147483647
 #define TIME_ZONE_ID_UNKNOWN 0
 #define TIME_ZONE_ID_STANDARD 1
@@ -606,6 +621,9 @@ typedef struct _BY_HANDLE_FILE_INFORMATION {
 	DWORD	nNumberOfLinks;
 	DWORD	nFileIndexHigh;
 	DWORD	nFileIndexLow;
+#ifdef _WIN32_WCE
+	DWORD	dwOID;
+#endif
 } BY_HANDLE_FILE_INFORMATION,*LPBY_HANDLE_FILE_INFORMATION;
 #if (_WIN32_WINNT >= 0x0600)
 /* http://msdn.microsoft.com/en-us/library/aa364217%28VS.85%29.aspx */
@@ -897,6 +915,15 @@ typedef struct _CRITICAL_SECTION_DEBUG {
 	DWORD ContentionCount;
 	DWORD Spare [2];
 } CRITICAL_SECTION_DEBUG,*PCRITICAL_SECTION_DEBUG;
+#ifdef UNDER_CE
+typedef struct _CRITICAL_SECTION {
+	DWORD LockCount;   // Nesting count on critical section
+        HANDLE OwnerThread; 	// Handle of owner thread
+	HANDLE hCrit;	// Handle to this critical section
+	DWORD needtrap;	// Trap in when freeing critical section
+	DWORD dwContentions;	// Count of contentions
+} CRITICAL_SECTION,*PCRITICAL_SECTION,*LPCRITICAL_SECTION;
+#else
 typedef struct _CRITICAL_SECTION {
 	PCRITICAL_SECTION_DEBUG DebugInfo;
 	LONG LockCount;
@@ -905,6 +932,7 @@ typedef struct _CRITICAL_SECTION {
 	HANDLE LockSemaphore;
 	DWORD SpinCount;
 } CRITICAL_SECTION,*PCRITICAL_SECTION,*LPCRITICAL_SECTION;
+#endif
 typedef struct _SYSTEMTIME {
 	WORD wYear;
 	WORD wMonth;
@@ -930,16 +958,10 @@ typedef struct _WIN32_FIND_DATAA {
 	FILETIME ftLastWriteTime;
 	DWORD nFileSizeHigh;
 	DWORD nFileSizeLow;
-#ifdef _WIN32_WCE
-    DWORD dwOID; 
-#else
 	DWORD dwReserved0;
 	DWORD dwReserved1;
-#endif
 	CHAR cFileName[MAX_PATH];
-#ifndef _WIN32_WCE
 	CHAR cAlternateFileName[14];
-#endif
 } WIN32_FIND_DATAA,*PWIN32_FIND_DATAA,*LPWIN32_FIND_DATAA;
 typedef struct _WIN32_FIND_DATAW {
 	DWORD dwFileAttributes;
@@ -1012,6 +1034,7 @@ typedef struct _SYSTEM_INFO {
 	WORD wProcessorLevel;
 	WORD wProcessorRevision;
 } SYSTEM_INFO,*LPSYSTEM_INFO;
+#ifndef _WIN32_WCE
 typedef struct _SYSTEM_POWER_STATUS {
 	BYTE ACLineStatus;
 	BYTE BatteryFlag;
@@ -1020,6 +1043,7 @@ typedef struct _SYSTEM_POWER_STATUS {
 	DWORD BatteryLifeTime;
 	DWORD BatteryFullLifeTime;
 } SYSTEM_POWER_STATUS,*LPSYSTEM_POWER_STATUS;
+#endif
 typedef struct _TIME_ZONE_INFORMATION {
 	LONG Bias;
 	WCHAR StandardName[32];
@@ -1039,6 +1063,25 @@ typedef struct _MEMORYSTATUS {
 	DWORD dwTotalVirtual;
 	DWORD dwAvailVirtual;
 } MEMORYSTATUS,*LPMEMORYSTATUS;
+
+#if (_WIN32_WCE >= 0x0500)
+typedef enum {
+  DeviceSearchByLegacyName,
+  DeviceSearchByDeviceName,
+  DeviceSearchByBusName,
+  DeviceSearchByGuid,
+  DeviceSearchByParent
+} DeviceSearchType;
+typedef struct _DevmgrDeviceInformation_tag {
+  DWORD dwSize;
+  HANDLE hDevice;
+  HANDLE hParentDevice;
+  WCHAR szLegacyName[6];
+  WCHAR szDeviceKey[MAX_PATH];
+  WCHAR szDeviceName[MAX_PATH];
+  WCHAR szBusName[MAX_PATH];
+} DEVMGR_DEVICE_INFORMATION, *PDEVMGR_DEVICE_INFORMATION;
+#endif
 #if (_WIN32_WINNT >= 0x0500)
 typedef struct _MEMORYSTATUSEX {
 	DWORD dwLength;
@@ -1109,6 +1152,44 @@ typedef struct _WIN_CERTIFICATE {
       WORD wCertificateType;
       BYTE bCertificate[1];
 } WIN_CERTIFICATE, *LPWIN_CERTIFICATE;
+#ifdef _WIN32_WCE
+typedef struct _SYSTEM_POWER_STATUS_EX {
+  BYTE ACLineStatus;
+  BYTE BatteryFlag;
+  BYTE BatteryLifePercent;
+  BYTE Reserved1;
+  DWORD BatteryLifeTime;
+  DWORD BatteryFullLifeTime;
+  BYTE Reserved2;
+  BYTE BackupBatteryFlag;
+  BYTE BackupBatteryLifePercent;
+  BYTE Reserved3;
+  DWORD BackupBatteryLifeTime;
+  DWORD BackupBatteryFullLifeTime;
+} SYSTEM_POWER_STATUS_EX, *PSYSTEM_POWER_STATUS_EX, *LPSYSTEM_POWER_STATUS_EX;
+typedef struct _SYSTEM_POWER_STATUS_EX2 {
+  BYTE ACLineStatus;
+  BYTE BatteryFlag;
+  BYTE BatteryLifePercent;
+  BYTE Reserved1;
+  DWORD BatteryLifeTime;
+  DWORD BatteryFullLifeTime;
+  BYTE Reserved2;
+  BYTE BackupBatteryFlag;
+  BYTE BackupBatteryLifePercent;
+  BYTE Reserved3;
+  DWORD BackupBatteryLifeTime;
+  DWORD BackupBatteryFullLifeTime;
+  DWORD BatteryVoltage;
+  DWORD BatteryCurrent;
+  DWORD BatteryAverageCurrent;
+  DWORD BatteryAverageInterval;
+  DWORD BatterymAHourConsumed;
+  DWORD BatteryTemperature;
+  DWORD BackupBatteryVoltage;
+  BYTE BatteryChemistry;
+} SYSTEM_POWER_STATUS_EX2, *PSYSTEM_POWER_STATUS_EX2, *LPSYSTEM_POWER_STATUS_EX2;
+#endif
 #if (_WIN32_WINNT >= 0x0501)
 typedef struct tagACTCTXA {
 	ULONG cbSize;
@@ -1344,6 +1425,9 @@ WINBASEAPI LPVOID WINAPI CreateFiberEx(SIZE_T,SIZE_T,DWORD,LPFIBER_START_ROUTINE
 #endif
 WINBASEAPI HANDLE WINAPI CreateFileA(LPCSTR,DWORD,DWORD,LPSECURITY_ATTRIBUTES,DWORD,DWORD,HANDLE);
 WINBASEAPI HANDLE WINAPI CreateFileW(LPCWSTR,DWORD,DWORD,LPSECURITY_ATTRIBUTES,DWORD,DWORD,HANDLE);
+#ifdef _WIN32_WCE
+HANDLE CreateFileForMappingW(LPCTSTR lpFileName, DWORD dwDesiredAccess, DWORD dwShareMode, LPSECURITY_ATTRIBUTES lpSecurityAttributes, DWORD dwCreationDisposition, DWORD dwFlagsAndAttributes, HANDLE hTemplateFile);
+#endif
 WINBASEAPI HANDLE WINAPI CreateFileMappingA(HANDLE,LPSECURITY_ATTRIBUTES,DWORD,DWORD,DWORD,LPCSTR);
 WINBASEAPI HANDLE WINAPI CreateFileMappingW(HANDLE,LPSECURITY_ATTRIBUTES,DWORD,DWORD,DWORD,LPCWSTR);
 #if (_WIN32_WINNT >= 0x0500)
@@ -1402,6 +1486,7 @@ WINBASEAPI HANDLE WINAPI CreateTimerQueue(void);
 WINBASEAPI BOOL WINAPI CreateTimerQueueTimer(PHANDLE,HANDLE,WAITORTIMERCALLBACK,PVOID,DWORD,DWORD,ULONG);
 #endif
 WINBASEAPI HANDLE WINAPI CreateThread(LPSECURITY_ATTRIBUTES,DWORD,LPTHREAD_START_ROUTINE,PVOID,DWORD,PDWORD);
+#define STACK_SIZE_PARAM_IS_A_RESERVATION 0x00010000
 WINBASEAPI HANDLE WINAPI CreateWaitableTimerA(LPSECURITY_ATTRIBUTES,BOOL,LPCSTR);
 WINBASEAPI HANDLE WINAPI CreateWaitableTimerW(LPSECURITY_ATTRIBUTES,BOOL,LPCWSTR);
 #if (_WIN32_WINNT >= 0x0501)
@@ -1411,7 +1496,11 @@ WINBASEAPI BOOL WINAPI DebugActiveProcess(DWORD);
 #if (_WIN32_WINNT >= 0x0501)
 WINBASEAPI BOOL WINAPI DebugActiveProcessStop(DWORD);
 #endif
+#if defined (_WIN32_WCE)
+/* defined as macro in kfuncs.h */
+#else
 WINBASEAPI void WINAPI DebugBreak(void);
+#endif
 #if (_WIN32_WINNT >= 0x0501)
 WINBASEAPI BOOL WINAPI DebugBreakProcess(HANDLE);
 WINBASEAPI BOOL WINAPI DebugSetProcessKillOnExit(BOOL);
@@ -1450,6 +1539,10 @@ WINBASEAPI BOOL WINAPI EncryptFileW(LPCWSTR);
 WINBASEAPI BOOL WINAPI EndUpdateResourceA(HANDLE,BOOL);
 WINBASEAPI BOOL WINAPI EndUpdateResourceW(HANDLE,BOOL);
 WINBASEAPI void WINAPI EnterCriticalSection(LPCRITICAL_SECTION);
+# if (_WIN32_WCE >= 0x0500)
+WINBASEAPI BOOL WINAPI EnumDeviceInterfaces(HANDLE, DWORD, GUID*, LPWSTR, LPDWORD);
+WINBASEAPI DWORD EnumDevices(LPTSTR lpszDevList, LPDWORD lpBuflen);
+#endif
 WINBASEAPI BOOL WINAPI EnumResourceLanguagesA(HMODULE,LPCSTR,LPCSTR,ENUMRESLANGPROCA,LONG_PTR);
 WINBASEAPI BOOL WINAPI EnumResourceLanguagesW(HMODULE,LPCWSTR,LPCWSTR,ENUMRESLANGPROCW,LONG_PTR);
 WINBASEAPI BOOL WINAPI EnumResourceNamesA(HMODULE,LPCSTR,ENUMRESNAMEPROCA,LONG_PTR);
@@ -1460,7 +1553,19 @@ WINBASEAPI BOOL WINAPI EqualPrefixSid(PSID,PSID);
 WINBASEAPI BOOL WINAPI EqualSid(PSID,PSID);
 WINBASEAPI DWORD WINAPI EraseTape(HANDLE,DWORD,BOOL);
 WINBASEAPI BOOL WINAPI EscapeCommFunction(HANDLE,DWORD);
+
+WINBASEAPI BOOL WINAPI TerminateProcess(HANDLE,UINT);
+#include <kfuncs.h>
+#ifdef _WIN32_WCE
+static inline void ExitProcess(UINT code)
+{
+	TerminateProcess(GetCurrentProcess(), code);
+	while (1);
+}
+// #define ExitProcess(CODE) do { TerminateProcess(GetCurrentProcess(), CODE); while (1); } while (0)
+#else
 DECLSPEC_NORETURN WINBASEAPI void WINAPI ExitProcess(UINT);
+#endif
 DECLSPEC_NORETURN WINBASEAPI void WINAPI ExitThread(DWORD);
 WINBASEAPI DWORD WINAPI ExpandEnvironmentStringsA(LPCSTR,LPSTR,DWORD);
 WINBASEAPI DWORD WINAPI ExpandEnvironmentStringsW(LPCWSTR,LPWSTR,DWORD);
@@ -1483,6 +1588,10 @@ WINBASEAPI BOOL WINAPI FindClose(HANDLE);
 WINBASEAPI BOOL WINAPI FindCloseChangeNotification(HANDLE);
 WINBASEAPI HANDLE WINAPI FindFirstChangeNotificationA(LPCSTR,BOOL,DWORD);
 WINBASEAPI HANDLE WINAPI FindFirstChangeNotificationW(LPCWSTR,BOOL,DWORD);
+# if (_WIN32_WCE >= 0x0500)
+WINBASEAPI HANDLE WINAPI FindFirstDevice( DeviceSearchType,LPCVOID, PDEVMGR_DEVICE_INFORMATION);
+WINBASEAPI BOOL   WINAPI FindNextDevice( HANDLE, PDEVMGR_DEVICE_INFORMATION );
+#endif
 WINBASEAPI HANDLE WINAPI FindFirstFileA(LPCSTR,LPWIN32_FIND_DATAA);
 WINBASEAPI HANDLE WINAPI FindFirstFileW(LPCWSTR,LPWIN32_FIND_DATAW);
 WINBASEAPI HANDLE WINAPI FindFirstFileExA(LPCSTR,FINDEX_INFO_LEVELS,PVOID,FINDEX_SEARCH_OPS,PVOID,DWORD);
@@ -1557,18 +1666,21 @@ WINBASEAPI DWORD WINAPI GetCurrentDirectoryA(DWORD,LPSTR);
 WINBASEAPI DWORD WINAPI GetCurrentDirectoryW(DWORD,LPWSTR);
 WINBASEAPI BOOL WINAPI GetCurrentHwProfileA(LPHW_PROFILE_INFOA);
 WINBASEAPI BOOL WINAPI GetCurrentHwProfileW(LPHW_PROFILE_INFOW);
+#ifndef _WIN32_WCE
+/* These are defined in kfuncs.h.  */
 WINBASEAPI HANDLE WINAPI GetCurrentProcess(void);
 WINBASEAPI DWORD WINAPI GetCurrentProcessId(void);
 WINBASEAPI HANDLE WINAPI GetCurrentThread(void);
-#ifdef _WIN32_WCE
-extern DWORD GetCurrentThreadId(void);
-#else
 WINBASEAPI DWORD WINAPI GetCurrentThreadId(void);
 #endif
 #define GetCurrentTime GetTickCount
 WINBASEAPI BOOL WINAPI GetDefaultCommConfigA(LPCSTR,LPCOMMCONFIG,PDWORD);
 WINBASEAPI BOOL WINAPI GetDefaultCommConfigW(LPCWSTR,LPCOMMCONFIG,PDWORD);
 WINBASEAPI BOOL WINAPI GetDevicePowerState(HANDLE, BOOL*);
+# if (_WIN32_WCE >= 0x0500)
+WINBASEAPI BOOL   WINAPI GetDeviceInformationByDeviceHandle( HANDLE, PDEVMGR_DEVICE_INFORMATION);
+WINBASEAPI BOOL   WINAPI GetDeviceInformationByFileHandle( HANDLE, PDEVMGR_DEVICE_INFORMATION);
+#endif
 WINBASEAPI BOOL WINAPI GetDiskFreeSpaceA(LPCSTR,PDWORD,PDWORD,PDWORD,PDWORD);
 WINBASEAPI BOOL WINAPI GetDiskFreeSpaceW(LPCWSTR,PDWORD,PDWORD,PDWORD,PDWORD);
 WINBASEAPI BOOL WINAPI GetDiskFreeSpaceExA(LPCSTR,PULARGE_INTEGER,PULARGE_INTEGER,PULARGE_INTEGER);
@@ -1653,7 +1765,14 @@ WINBASEAPI DWORD WINAPI GetPrivateProfileStringA(LPCSTR,LPCSTR,LPCSTR,LPSTR,DWOR
 WINBASEAPI DWORD WINAPI GetPrivateProfileStringW(LPCWSTR,LPCWSTR,LPCWSTR,LPWSTR,DWORD,LPCWSTR);
 WINBASEAPI BOOL WINAPI GetPrivateProfileStructA(LPCSTR,LPCSTR,LPVOID,UINT,LPCSTR);
 WINBASEAPI BOOL WINAPI GetPrivateProfileStructW(LPCWSTR,LPCWSTR,LPVOID,UINT,LPCWSTR);
+#ifdef _WIN32_WCE
+# if (_WIN32_WCE >= 0x300)
+WINBASEAPI FARPROC WINAPI GetProcAddressA(HINSTANCE,LPCSTR);
+# endif
+WINBASEAPI FARPROC WINAPI GetProcAddressW(HINSTANCE,LPCWSTR);
+#else
 WINBASEAPI FARPROC WINAPI GetProcAddress(HINSTANCE,LPCSTR);
+#endif
 WINBASEAPI BOOL WINAPI GetProcessAffinityMask(HANDLE,PDWORD,PDWORD);
 #if (_WIN32_WINNT >= 0x0601)
 WINBASEAPI BOOL WINAPI GetProcessDEPPolicy (HANDLE, LPDWORD, PBOOL);
@@ -1703,7 +1822,12 @@ WINBASEAPI DEP_SYSTEM_POLICY_TYPE WINAPI GetSystemDEPPolicy (void);
 WINBASEAPI UINT WINAPI GetSystemDirectoryA(LPSTR,UINT);
 WINBASEAPI UINT WINAPI GetSystemDirectoryW(LPWSTR,UINT);
 WINBASEAPI VOID WINAPI GetSystemInfo(LPSYSTEM_INFO);
+#ifndef _WIN32_WCE
 WINBASEAPI BOOL WINAPI GetSystemPowerStatus(LPSYSTEM_POWER_STATUS);
+#else
+WINBASEAPI DWORD GetSystemPowerStatusEx2(PSYSTEM_POWER_STATUS_EX2,DWORD,BOOL);
+WINBASEAPI BOOL GetSystemPowerStatusEx(PSYSTEM_POWER_STATUS_EX,BOOL);
+#endif
 #if (_WIN32_WINNT >= 0x0501)
 WINBASEAPI BOOL WINAPI GetSystemRegistryQuota(PDWORD,PDWORD);
 #endif
@@ -1762,27 +1886,38 @@ WINBASEAPI DWORD WINAPI GetWindowThreadProcessId(HWND,PDWORD);
 WINBASEAPI UINT WINAPI GetWriteWatch(DWORD,PVOID,SIZE_T,PVOID*,PULONG_PTR,PULONG);
 WINBASEAPI ATOM WINAPI GlobalAddAtomA(LPCSTR);
 WINBASEAPI ATOM WINAPI GlobalAddAtomW( LPCWSTR);
-WINBASEAPI HGLOBAL WINAPI GlobalAlloc(UINT,DWORD);
 WINBASEAPI SIZE_T WINAPI GlobalCompact(DWORD); /* Obsolete: Has no effect. */
 WINBASEAPI ATOM WINAPI GlobalDeleteAtom(ATOM);
 #define GlobalDiscard(hMem) GlobalReAlloc((hMem), 0, GMEM_MOVEABLE)
 WINBASEAPI ATOM WINAPI GlobalFindAtomA(LPCSTR);
 WINBASEAPI ATOM WINAPI GlobalFindAtomW(LPCWSTR);
 WINBASEAPI VOID WINAPI GlobalFix(HGLOBAL); /* Obsolete: Has no effect. */
-WINBASEAPI UINT WINAPI GlobalFlags(HGLOBAL); /* Obsolete: Has no effect. */
-WINBASEAPI HGLOBAL WINAPI GlobalFree(HGLOBAL);
 WINBASEAPI UINT WINAPI GlobalGetAtomNameA(ATOM,LPSTR,int);
 WINBASEAPI UINT WINAPI GlobalGetAtomNameW(ATOM,LPWSTR,int);
+#ifndef _WIN32_WCE
+WINBASEAPI HGLOBAL WINAPI GlobalAlloc(UINT,DWORD);
+WINBASEAPI HGLOBAL WINAPI GlobalFree(HGLOBAL);
+WINBASEAPI HGLOBAL WINAPI GlobalReAlloc(HGLOBAL,DWORD,UINT);
 WINBASEAPI HGLOBAL WINAPI GlobalHandle(PCVOID);
 WINBASEAPI LPVOID WINAPI GlobalLock(HGLOBAL);
+WINBASEAPI BOOL WINAPI GlobalUnlock(HGLOBAL); 
+WINBASEAPI DWORD WINAPI GlobalSize(HGLOBAL);
+WINBASEAPI UINT WINAPI GlobalFlags(HGLOBAL); /* Obsolete: Has no effect. */
+#else
+# define GlobalAlloc(flags, cb) LocalAlloc(flags, cb)
+# define GlobalFree(h) LocalFree(h)
+# define GlobalReAlloc(h, cb, flags) LocalReAlloc(h, cb, flags)
+# define GlobalHandle(lp) LocalHandle(lp)
+# define GlobalLock(lp) LocalLock(lp)
+# define GlobalUnlock(lp) LocalUnlock(lp)
+# define GlobalSize(lp) LocalSize(lp)
+# define GlobalFlags(lp) LocalFlags(lp)
+#endif
 WINBASEAPI VOID WINAPI GlobalMemoryStatus(LPMEMORYSTATUS);
 #if (_WIN32_WINNT >= 0x0500)
 WINBASEAPI BOOL WINAPI GlobalMemoryStatusEx(LPMEMORYSTATUSEX);
 #endif
-WINBASEAPI HGLOBAL WINAPI GlobalReAlloc(HGLOBAL,DWORD,UINT);
-WINBASEAPI DWORD WINAPI GlobalSize(HGLOBAL);
 WINBASEAPI VOID WINAPI GlobalUnfix(HGLOBAL); /* Obsolete: Has no effect. */
-WINBASEAPI BOOL WINAPI GlobalUnlock(HGLOBAL); 
 WINBASEAPI BOOL WINAPI GlobalUnWire(HGLOBAL); /* Obsolete: Has no effect. */
 WINBASEAPI PVOID WINAPI GlobalWire(HGLOBAL); /* Obsolete: Has no effect. */
 #define HasOverlappedIoCompleted(lpOverlapped)  ((lpOverlapped)->Internal != STATUS_PENDING)
@@ -1878,17 +2013,37 @@ WINBASEAPI HLOCAL WINAPI LocalAlloc(UINT,SIZE_T);
 WINBASEAPI SIZE_T WINAPI LocalCompact(UINT); /* Obsolete: Has no effect. */
 WINBASEAPI HLOCAL LocalDiscard(HLOCAL);
 WINBASEAPI BOOL WINAPI LocalFileTimeToFileTime(CONST FILETIME *,LPFILETIME);
+#ifndef _WIN32_WCE
 WINBASEAPI UINT WINAPI LocalFlags(HLOCAL); /* Obsolete: Has no effect. */
+#else
+# define LocalFlags(H) ((UINT)0)
+#endif
 WINBASEAPI HLOCAL WINAPI LocalFree(HLOCAL);
+#ifndef _WIN32_WCE
 WINBASEAPI HLOCAL WINAPI LocalHandle(LPCVOID);
-WINBASEAPI PVOID WINAPI LocalLock(HLOCAL);
+#else
+# define LocalHandle(H) ((HLOCAL)(H))
+#endif
+#ifndef _WIN32_WCE
+WINBASEAPI LPVOID WINAPI LocalLock(HLOCAL);
+#else
+# define LocalLock(H) ((LPVOID)(H))
+#endif
 WINBASEAPI HLOCAL WINAPI LocalReAlloc(HLOCAL,SIZE_T,UINT);
 WINBASEAPI SIZE_T WINAPI LocalShrink(HLOCAL,UINT);  /* Obsolete: Has no effect. */
 WINBASEAPI UINT WINAPI LocalSize(HLOCAL);
+#ifndef _WIN32_WCE
 WINBASEAPI BOOL WINAPI LocalUnlock(HLOCAL);
+#else
+# define LocalUnlock(H) ((BOOL)0)
+#endif
 WINBASEAPI BOOL WINAPI LockFile(HANDLE,DWORD,DWORD,DWORD,DWORD);
 WINBASEAPI BOOL WINAPI LockFileEx(HANDLE,DWORD,DWORD,DWORD,DWORD,LPOVERLAPPED);
+#ifdef _WIN32_WCE
+#define LockResource(h) ((PVOID)(h))
+#else
 WINBASEAPI PVOID WINAPI LockResource(HGLOBAL);
+#endif
 #define LockSegment(w) GlobalFix((HANDLE)(w)) /* Obsolete: Has no effect. */
 WINBASEAPI BOOL WINAPI LogonUserA(LPSTR,LPSTR,LPSTR,DWORD,DWORD,PHANDLE);
 WINBASEAPI BOOL WINAPI LogonUserW(LPWSTR,LPWSTR,LPWSTR,DWORD,DWORD,PHANDLE);
@@ -1970,7 +2125,7 @@ WINBASEAPI BOOL WINAPI PrivilegedServiceAuditAlarmW(LPCWSTR,LPCWSTR,HANDLE,PPRIV
 #if (_WIN32_WINNT >= 0x0500)
 WINBASEAPI BOOL WINAPI ProcessIdToSessionId(DWORD,DWORD*);
 #endif
-WINBASEAPI BOOL WINAPI PulseEvent(HANDLE);
+// inlined in kfuncs.h WINBASEAPI BOOL WINAPI PulseEvent(HANDLE);
 WINBASEAPI BOOL WINAPI PurgeComm(HANDLE,DWORD);
 #if (_WIN32_WINNT >= 0x0501)
 WINBASEAPI BOOL WINAPI QueryActCtxW(DWORD,HANDLE,PVOID,ULONG,PVOID,SIZE_T,SIZE_T*);
@@ -2020,7 +2175,7 @@ WINBASEAPI BOOL WINAPI ReplaceFileW(LPCWSTR,LPCWSTR,LPCWSTR,DWORD,LPVOID,LPVOID)
 WINBASEAPI BOOL WINAPI ReportEventA(HANDLE,WORD,WORD,DWORD,PSID,WORD,DWORD,LPCSTR*,PVOID);
 WINBASEAPI BOOL WINAPI ReportEventW(HANDLE,WORD,WORD,DWORD,PSID,WORD,DWORD,LPCWSTR*,PVOID);
 #ifdef _WIN32_WCE
-extern BOOL ResetEvent(HANDLE);
+// inlined in kfuncs.h extern BOOL ResetEvent(HANDLE);
 #else
 WINBASEAPI BOOL WINAPI ResetEvent(HANDLE);
 #endif
@@ -2057,7 +2212,7 @@ WINBASEAPI BOOL WINAPI SetEnvironmentVariableA(LPCSTR,LPCSTR);
 WINBASEAPI BOOL WINAPI SetEnvironmentVariableW(LPCWSTR,LPCWSTR);
 WINBASEAPI UINT WINAPI SetErrorMode(UINT);
 #ifdef _WIN32_WCE
-extern BOOL SetEvent(HANDLE);
+// inlined in kfuncs.h extern BOOL SetEvent(HANDLE);
 #else
 WINBASEAPI BOOL WINAPI SetEvent(HANDLE);
 #endif
@@ -2105,7 +2260,9 @@ WINBASEAPI BOOL WINAPI SetSecurityDescriptorOwner(PSECURITY_DESCRIPTOR,PSID,BOOL
 WINBASEAPI BOOL WINAPI SetSecurityDescriptorSacl(PSECURITY_DESCRIPTOR,BOOL,PACL,BOOL);
 WINBASEAPI BOOL WINAPI SetStdHandle(DWORD,HANDLE);
 #define SetSwapAreaSize(w) (w)
+#if !defined (_WIN32_WCE)
 WINBASEAPI BOOL WINAPI SetSystemPowerState(BOOL,BOOL);
+#endif
 WINBASEAPI BOOL WINAPI SetSystemTime(const SYSTEMTIME*);
 WINBASEAPI BOOL WINAPI SetSystemTimeAdjustment(DWORD,BOOL);
 WINBASEAPI DWORD WINAPI SetTapeParameters(HANDLE,DWORD,PVOID);
@@ -2142,10 +2299,12 @@ WINBASEAPI BOOL WINAPI SystemTimeToFileTime(const SYSTEMTIME*,LPFILETIME);
 WINBASEAPI BOOL WINAPI TzSpecificLocalTimeToSystemTime(LPTIME_ZONE_INFORMATION,LPSYSTEMTIME,LPSYSTEMTIME);
 #endif
 WINBASEAPI BOOL WINAPI SystemTimeToTzSpecificLocalTime(LPTIME_ZONE_INFORMATION,LPSYSTEMTIME,LPSYSTEMTIME);
-WINBASEAPI BOOL WINAPI TerminateProcess(HANDLE,UINT);
 WINBASEAPI BOOL WINAPI TerminateThread(HANDLE,DWORD);
+#ifndef _WIN32_WCE
+/* In kfuncs.h */
 WINBASEAPI DWORD WINAPI TlsAlloc(VOID);
 WINBASEAPI BOOL WINAPI TlsFree(DWORD);
+#endif
 WINBASEAPI PVOID WINAPI TlsGetValue(DWORD);
 WINBASEAPI BOOL WINAPI TlsSetValue(DWORD,PVOID);
 WINBASEAPI BOOL WINAPI TransactNamedPipe(HANDLE,PVOID,DWORD,PVOID,DWORD,PDWORD,LPOVERLAPPED);
@@ -2210,6 +2369,23 @@ WINBASEAPI BOOL WINAPI MapUserPhysicalPages(PVOID,ULONG_PTR,PULONG_PTR);
 WINBASEAPI BOOL WINAPI MapUserPhysicalPagesScatter(PVOID*,ULONG_PTR,PULONG_PTR);
 #endif
 
+#ifdef _WIN32_WCE
+typedef struct STORE_INFORMATION {
+  DWORD dwStoreSize;
+  DWORD dwFreeSize;
+} STORE_INFORMATION, *LPSTORE_INFORMATION;
+WINBASEAPI BOOL GetStoreInformation(LPSTORE_INFORMATION lpsi);
+#endif
+
+#if (_WIN32_WCE >= 0x300)
+WINBASEAPI BOOL CeSetThreadQuantum(HANDLE hThread, DWORD dwTime);
+#endif
+
+#if (_WIN32_WCE >= 0x500)
+WINBASEAPI BOOL WINAPI CeSetThreadPriority(HANDLE hThread, int nPriority);
+WINBASEAPI int WINAPI CeGetThreadPriority(HANDLE hThread);
+#endif
+
 #ifdef UNICODE
 typedef STARTUPINFOW STARTUPINFO,*LPSTARTUPINFO;
 typedef WIN32_FIND_DATAW WIN32_FIND_DATA,*PWIN32_FIND_DATA,*LPWIN32_FIND_DATA;
@@ -2239,6 +2415,9 @@ typedef PCACTCTXW PCACTCTX;
 #define CreateDirectoryEx CreateDirectoryExW
 #define CreateEvent CreateEventW
 #define CreateFile CreateFileW
+#ifdef _WIN32_WCE
+#define CreateFileForMapping CreateFileForMappingW
+#endif
 #define CreateFileMapping CreateFileMappingW
 #if (_WIN32_WINNT >= 0x0500)
 #define CreateHardLink CreateHardLinkW
@@ -2328,6 +2507,9 @@ typedef PCACTCTXW PCACTCTX;
 #define GetPrivateProfileSectionNames GetPrivateProfileSectionNamesW
 #define GetPrivateProfileString GetPrivateProfileStringW
 #define GetPrivateProfileStruct GetPrivateProfileStructW
+#ifdef _WIN32_WCE
+# define GetProcAddress GetProcAddressW
+#endif
 #define GetProfileInt GetProfileIntW
 #define GetProfileSection GetProfileSectionW
 #define GetProfileString GetProfileStringW
@@ -2627,6 +2809,20 @@ typedef PCACTCTXA PCACTCTX;
 #define WriteProfileString WriteProfileStringA
 #endif
 #endif
+
+#ifdef _WIN32_WCE
+#include <kfuncs.h>
+
+#define	lstrcpyW wcscpy
+#define lstrcatW wcscat
+#define lstrlenW wcslen
+
+WINBASEAPI HANDLE WINAPI ActivateDevice(LPCWSTR, DWORD);
+WINBASEAPI HANDLE WINAPI ActivateDeviceEx(LPCWSTR, LPCVOID, DWORD, LPVOID);
+WINBASEAPI BOOL WINAPI DeactivateDevice(HANDLE);
+WINBASEAPI BOOL DeregisterDevice(HANDLE);
+WINBASEAPI HANDLE RegisterDevice(LPCWSTR, DWORD, LPCWSTR, DWORD);
+#endif /* _WIN32_WCE */
 
 #ifdef __cplusplus
 }

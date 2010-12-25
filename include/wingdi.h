@@ -1187,10 +1187,20 @@ extern "C" {
 #define DM_PELSHEIGHT 0x00100000
 #define DM_DISPLAYFLAGS 0x00200000
 #define DM_DISPLAYFREQUENCY 0x00400000
+#ifndef _WIN32_WCE
 #define DM_ICMMETHOD 0x00800000
 #define DM_ICMINTENT 0x01000000
 #define DM_MEDIATYPE 0x02000000
 #define DM_DITHERTYPE 0x04000000
+#else /* _WIN32_WCE */
+#define DM_DISPLAYORIENTATION 0x00800000
+#define DM_DISPLAYQUERYORIENTATION 0x01000000
+#define DMDO_0 0
+#define DMDO_DEFAULT DMDO_0
+#define DMDO_90 1
+#define DMDO_180 2
+#define DMDO_270 4
+#endif /* _WIN32_WCE */
 #if(WINVER >= 0x0500)
 #define DM_PANNINGWIDTH 0x08000000
 #define DM_PANNINGHEIGHT 0x10000000
@@ -1540,6 +1550,7 @@ typedef struct _devicemodeA {
 #endif
 #endif /* WINVER >= 0x0400 */
 } DEVMODEA,*LPDEVMODEA,*PDEVMODEA;
+#ifndef _WIN32_WCE
 typedef struct _devicemodeW { 
   WCHAR   dmDeviceName[CCHDEVICENAME]; 
   WORD   dmSpecVersion; 
@@ -1593,6 +1604,37 @@ typedef struct _devicemodeW {
 #endif
 #endif /* WINVER >= 0x0400 */
 } DEVMODEW,*LPDEVMODEW,*PDEVMODEW;
+#else /* _WIN32_WCE */
+typedef struct _devicemodeW { 
+  WCHAR  dmDeviceName[CCHDEVICENAME]; 
+  WORD   dmSpecVersion; 
+  WORD   dmDriverVersion; 
+  WORD   dmSize; 
+  WORD   dmDriverExtra; 
+  DWORD  dmFields; 
+  short  dmOrientation;
+  short  dmPaperSize;
+  short  dmPaperLength;
+  short  dmPaperWidth;
+  short  dmScale; 
+  short  dmCopies; 
+  short  dmDefaultSource; 
+  short  dmPrintQuality; 
+  short  dmColor; 
+  short  dmDuplex; 
+  short  dmYResolution; 
+  short  dmTTOption; 
+  short  dmCollate; 
+  WCHAR  dmFormName[CCHFORMNAME]; 
+  WORD   dmLogPixels; 
+  DWORD  dmBitsPerPel; 
+  DWORD  dmPelsWidth; 
+  DWORD  dmPelsHeight; 
+  DWORD  dmDisplayFlags; 
+  DWORD  dmDisplayFrequency; 
+  DWORD  dmDisplayOrientation;
+} DEVMODEW,*PDEVMODEW,*NPDEVMODEW,*LPDEVMODEW;
+#endif /* _WIN32_WCE */
 typedef struct tagDIBSECTION {
 	BITMAP dsBm;
 	BITMAPINFOHEADER dsBmih;
@@ -2816,18 +2858,26 @@ WINGDIAPI COLORREF WINAPI GetBkColor(HDC);
 WINGDIAPI int WINAPI GetBkMode(HDC);
 WINGDIAPI UINT WINAPI GetBoundsRect(HDC,LPRECT,UINT);
 WINGDIAPI BOOL WINAPI GetBrushOrgEx(HDC,LPPOINT);
+#ifndef _WIN32_WCE
 WINGDIAPI BOOL WINAPI GetCharABCWidthsA(HDC,UINT,UINT,LPABC);
 WINGDIAPI BOOL WINAPI GetCharABCWidthsW(HDC,UINT,UINT,LPABC);
+#else
+WINGDIAPI BOOL WINAPI GetCharABCWidths(HDC,UINT,UINT,LPABC);
+#endif
 WINGDIAPI BOOL WINAPI GetCharABCWidthsFloatA(HDC,UINT,UINT,LPABCFLOAT);
 WINGDIAPI BOOL WINAPI GetCharABCWidthsFloatW(HDC,UINT,UINT,LPABCFLOAT);
 WINGDIAPI DWORD WINAPI GetCharacterPlacementA(HDC,LPCSTR,int,int,LPGCP_RESULTSA,DWORD);
 WINGDIAPI DWORD WINAPI GetCharacterPlacementW(HDC,LPCWSTR,int,int,LPGCP_RESULTSW,DWORD);
+#ifndef _WIN32_WCE
 WINGDIAPI BOOL WINAPI GetCharWidth32A(HDC,UINT,UINT,LPINT);
 WINGDIAPI BOOL WINAPI GetCharWidth32W(HDC,UINT,UINT,LPINT);
 WINGDIAPI BOOL WINAPI GetCharWidthA(HDC,UINT,UINT,LPINT);
 WINGDIAPI BOOL WINAPI GetCharWidthW(HDC,UINT,UINT,LPINT);
 WINGDIAPI BOOL WINAPI GetCharWidthFloatA(HDC,UINT,UINT,PFLOAT);
 WINGDIAPI BOOL WINAPI GetCharWidthFloatW(HDC,UINT,UINT,PFLOAT);
+#else
+WINGDIAPI BOOL WINAPI GetCharWidth32(HDC,UINT,UINT,LPINT);
+#endif
 WINGDIAPI int WINAPI GetClipBox(HDC,LPRECT);
 WINGDIAPI int WINAPI GetClipRgn(HDC,HRGN);
 WINGDIAPI BOOL WINAPI GetColorAdjustment(HDC,LPCOLORADJUSTMENT);
@@ -2897,17 +2947,15 @@ WINGDIAPI int WINAPI GetTextCharsetInfo(HDC,LPFONTSIGNATURE,DWORD);
 WINGDIAPI COLORREF WINAPI GetTextColor(HDC);
 WINGDIAPI BOOL WINAPI GetTextExtentExPointA(HDC,LPCSTR,int,int,LPINT,LPINT,LPSIZE);
 WINGDIAPI BOOL WINAPI GetTextExtentExPointW( HDC,LPCWSTR,int,int,LPINT,LPINT,LPSIZE );
-WINGDIAPI BOOL WINAPI GetTextExtentPointA(HDC,LPCSTR,int,LPSIZE);
-WINGDIAPI BOOL WINAPI GetTextExtentPointW(HDC,LPCWSTR,int,LPSIZE);
 #if (_WIN32_WINNT >= 0x0500)
 WINGDIAPI BOOL WINAPI GetTextExtentExPointI(HDC, LPWORD, int, int, LPINT, LPINT, LPSIZE);
 #endif
-#ifdef _WIN32_WCE
-extern BOOL GetTextExtentPoint32A(HDC,LPCSTR,int,LPSIZE);
-extern BOOL GetTextExtentPoint32W( HDC,LPCWSTR,int,LPSIZE);
-#else
+#if !defined (_WIN32_WCE)
 WINGDIAPI BOOL WINAPI GetTextExtentPoint32A(HDC,LPCSTR,int,LPSIZE);
 WINGDIAPI BOOL WINAPI GetTextExtentPoint32W( HDC,LPCWSTR,int,LPSIZE);
+#elif (_WIN32_WCE >= 0x200)
+#define GetTextExtentPointW(hdc,cstr,len,size) GetTextExtentExPointW(hdc,cstr,len,0,NULL,NULL,size)
+#define GetTextExtentPoint32W GetTextExtentPointW
 #endif
 WINGDIAPI int WINAPI GetTextFaceA(HDC,int,LPSTR);
 WINGDIAPI int WINAPI GetTextFaceW(HDC,int,LPWSTR);
@@ -3059,6 +3107,8 @@ WINGDIAPI BOOL WINAPI wglUseFontOutlinesW(HDC,DWORD,DWORD,DWORD,FLOAT,FLOAT,int,
 #if (WINVER >= 0x0410)
 WINGDIAPI BOOL WINAPI AlphaBlend(HDC,int,int,int,int,HDC,int,int,int,int,BLENDFUNCTION);
 WINGDIAPI BOOL WINAPI GradientFill(HDC,PTRIVERTEX,ULONG,PVOID,ULONG,ULONG);
+#endif
+#if (WINVER >= 0x0410) || (_WIN32_WCE >= 0x0400)
 WINGDIAPI BOOL WINAPI TransparentBlt(HDC,int,int,int,int,HDC,int,int,int,int,UINT);
 #endif
 #if (_WIN32_WINNT >= 0x0500)
@@ -3115,9 +3165,13 @@ typedef DISPLAY_DEVICEW DISPLAY_DEVICE, *PDISPLAY_DEVICE, *LPDISPLAY_DEVICE;
 #define EnumICMProfiles EnumICMProfilesW
 #define ExtTextOut ExtTextOutW
 #define GetCharABCWidthsFloat GetCharABCWidthsFloatW
+#ifndef _WIN32_WCE
 #define GetCharABCWidths GetCharABCWidthsW
+#endif
 #define GetCharacterPlacement GetCharacterPlacementW
+#ifndef _WIN32_WCE
 #define GetCharWidth32 GetCharWidth32W
+#endif
 #define GetCharWidthFloat GetCharWidthFloatW
 #define GetCharWidth GetCharWidthW
 #define GetEnhMetaFile GetEnhMetaFileW

@@ -1,0 +1,6 @@
+LIBRARY IMGDECMP
+EXPORTS
+DecompressImageIndirect
+Get332Palette
+GetHalftonePalette
+GetTransparentColor

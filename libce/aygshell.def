@@ -1,0 +1,247 @@
+LIBRARY AYGSHELL
+EXPORTS
+;
+; This file is CeGCC's adaptation of the DEFinition file for the aygshell dll.
+; It copes with some stuff we do, and some we don't know.
+;
+; These functions are known to be in the DLL by name
+;
+ADChgTaskList
+ADChgTrustedSrcList
+ADRegisterCallback
+ADTaskInfo
+AssociateNoteWithCall
+CancelSIPUp
+ComboBoxEditSubProc
+ComboEditAutoComplete
+ComboSubProc
+DMProcessConfigXML
+EditSubProc
+ExitWindowsEx
+FreeRegisteredAppInfo
+GetRegisteredAppInfo
+PathAddBackslash
+PathCombine
+PathFindExtension
+PathFindFileName
+PathIsRelative
+PathRemoveBackslash
+PathRemoveBlanks
+PhoneGetCallProperties
+PhoneGetCallPropertyBag
+SHAppNotifyDone
+SHBox
+SHBoxEx
+SHChangeNotifyDeregister
+SHChangeNotifyFree
+SHChangeNotifyRegister
+SHCloseApps
+SHCommandBar_EnableCommand
+SHCommandBar_GetClientRect
+SHCommandBar_GetCommandBarByID
+SHCreateContextMenu
+SHCreateMainWindow
+SHCreateMenuBar		@34	; described on MSDN, published by name and number
+SHCreateNewItem
+SHCreateSystemFont
+SHCreateWorkerWindow
+SHDoneButton
+SHEnableEditMenu
+SHFindMenuBar
+SHForceBaseState
+SHFullScreen
+SHGetAppKeyAssoc
+SHGetAutoRunPath
+SHGetInputContext
+SHHandleActivate
+SHHandleSipChange
+SHImListPopup
+SHInitDialog		@56	; described on MSDN, published by name and number
+SHInitExtraControls
+SHInputDialog
+SHMakeCall
+SHMessageBox
+SHOnPluginDataChange
+SHRecognizeGesture
+SHRunCpl
+SHSetAppKeyWndAssoc
+SHSetInputContext
+SHSetNavBarText
+SHShowContextMenu
+SHSipInfo
+SHSipPreference
+SHTextBox
+SHTrackPopupMenu
+SetRegisteredAppInfo
+Shell_Alloc
+Shell_AllocString
+Shell_CatStrAlloc
+Shell_Free
+Shell_HeapCreate
+Shell_LoadStringAlloc
+Shell_RegAllocString
+StrStrI
+SubClassThisWindow
+;
+; These are NONAME but confirmed somehow
+;
+SHHandleWMSettingChange		@83     NONAME	; described as NONAME on MSDN
+SHHandleWMActivate		@84     NONAME	; described as NONAME on MSDN
+SHSendBackToFocusWindow		@97	NONAME  ; http://groups.google.hu/group/microsoft.public.windowsce.embedded/msg/e407143ac07929b9
+;
+; These are described by MinGW to be in aygshell.lib but are not published by name
+; in the DLL, nor do we have confirmation of their ordinal.
+;
+; CreateImageCache
+; DisplayNotRunnableAppDialog
+; DoEditContextMenu
+; DrawAlignedIcon
+; GetProtocol
+; IsFullScreenWindow
+; IsSANMessage
+; LFHeightForPoint
+; LoadStringEtcOver
+; NotifyAppsOnEvent
+; PathFindNextComponent
+; PathIsPrefix
+; PhoneShowCallLog
+; SHAnimateListviewOpen
+; SHAnimateRects
+; SHBoldFontAllowed
+; SHCheckForContextMenu
+; SHClearStartedBit
+; SHColorDisplay
+; SHCopyBitmap
+; SHCreateCOleWindow
+; SHCreateMenuBarInternal
+; SHDocManagerCreate
+; SHDocManagerDestroy
+; SHDocManagerQuery
+; SHDocManagerRegister
+; SHDrawBranding
+; SHDrawClippedText
+; SHDrawUnderline
+; SHDrawUnderlineColor
+; SHEnableRadio
+; SHEndProfileObj
+; SHEnumFiles
+; SHEnumFolders
+; SHEnumPropSheetHandlers
+; SHEscapeAccelerators
+; SHEscapeBubbleHtml
+; SHFadeImage
+; SHFillRectClr
+; SHFindForegroundMenuBar
+; SHFindPreviousInstance
+; SHFindPreviousInstanceEx
+; SHFontMgrCreate
+; SHFontMgrDestroy
+; SHFontMgrManageFonts
+; SHForceBaseStateEx
+; SHFreeContextMenuExtensions
+; SHFreeScanners
+; SHGetActiveDialog
+; SHGetCarrierBranding
+; SHGetCarrierBrandingFlag
+; SHGetDeviceFeatureLevel
+; SHGetEmergencyCallList
+; SHGetFontHeight
+; SHGetKOBits
+; SHGetLocaleInfo
+; SHGetMessageBoxIcon
+; SHGetNavBarItemRect
+; SHGetPowerOnTime
+; SHGetPresetMessage
+; SHGetSimToolkitMenu
+; SHGetSoundFileList
+; SHGetStyleBkColor
+; SHGetStyleColor
+; SHGetStyleFont
+; SHGetSystemDefaultLCID
+; SHGetTimeFormat
+; SHGetUiInfo
+; SHGradientDeInit
+; SHGradientDraw
+; SHGradientInit
+; SHHdrGrpSepLineDraw
+; SHInitPresetMessages
+; SHInsertPresetMessage
+; SHInvalidateScreen
+; SHInvokeContextMenuCommand
+; SHIsLocked
+; SHIsPreRapierApp
+; SHLoadContextMenuExtensions
+; SHLoadFileContextMenuExtensions
+; SHLoadImageFile
+; SHLoadImageResource
+; SHLoadMenuPopup
+; SHLoadSKFromReg
+; SHLock
+; SHMakeValidFilename
+; SHNavigateBack
+; SHNewProfileObj
+; SHNotificationAdd
+; SHNotificationGetData
+; SHNotificationRemove
+; SHNotificationUpdate
+; SHNotifyAppsOnCallConnect
+; SHNotifyAppsOnCarkit
+; SHNotifyAppsOnDock
+; SHNotifyAppsOnHeadset
+; SHNotifyAppsOnIncomingCall
+; SHNotifyAppsOnSpeakerPhone
+; SHOnFullScreenAppActivate
+; SHOnMissedCallCountChange
+; SHOnVoiceMailCountChange
+; SHPaintBubbleFrame
+; SHPopulatePresetMessageMenu
+; SHPreProcessLogFont
+; SHQueryMenuExtensions
+; SHRefreshStartMenu
+; SHRegGetHLMDWValue
+; SHRegSetValueEx
+; SHReleasePresetMessages
+; SHReplaceString
+; SHRunFontManager
+; SHRunPresetMessagesEdit
+; SHRunSafeApplet
+; SHSameWindowProcesses
+; SHSavePWWarning
+; SHScanBuffer
+; SHScanFile
+; SHSendBackToFocusWindow
+; SHSetAsWatermark
+; SHSetBack
+; SHSetBubbleRegion
+; SHSetForegroundLastActivePopup
+; SHSetKOBits
+; SHSetPresetMessage
+; SHSetSimToolkitMenu
+; SHSetSoftKey
+; SHSetWindowBits
+; SHShowSoftKeys
+; SHSignalDone
+; SHSoundManGetDisplayName
+; SHSoundManGetDisplayNameList
+; SHSoundManGetFileName
+; SHStartAndBlock
+; SHStartIfNeeded
+; SHStartProfile
+; SHToolkitQueryShell
+; SHTurnScreenOn
+; SHUnEscapeAccelerators
+; SHUnlock
+; SHVoiceTagDelete
+; SHVoiceTagPlayback
+; SHVoiceTagRecognize
+; SHVoiceTagTrain
+; SHWriteLockState
+; TZFindClose
+; TZFindNext
+; TZFindOpen
+; TZGetData
+; UIHGetTextToStruct
+; UIHLimitTextControls
+; UIHSetHWNDToStruct
+; UIHSetTextFromStruct
+; VerifyTrust

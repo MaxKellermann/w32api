@@ -29,6 +29,7 @@ extern "C" {
 #define TH32CS_SNAPPROCESS	0x2
 #define TH32CS_SNAPTHREAD	0x4
 #define TH32CS_SNAPMODULE	0x8
+#define TH32CS_GETALLMODS      0x80000000
 #define TH32CS_SNAPALL	(TH32CS_SNAPHEAPLIST|TH32CS_SNAPPROCESS|TH32CS_SNAPTHREAD|TH32CS_SNAPMODULE)
 #define TH32CS_INHERIT	0x80000000
 typedef struct tagHEAPLIST32 {
@@ -70,7 +71,13 @@ typedef struct tagPROCESSENTRY32 {
 	DWORD th32ParentProcessID;
 	LONG pcPriClassBase;
 	DWORD dwFlags;
+#ifdef _WIN32_WCE
+	WCHAR szExeFile[MAX_PATH];
+	DWORD th32MemoryBase;
+	DWORD th32AccessKey;
+#else
 	CHAR  szExeFile[MAX_PATH];
+#endif
 } PROCESSENTRY32,*PPROCESSENTRY32,*LPPROCESSENTRY32;
 typedef struct tagTHREADENTRY32 {
 	DWORD dwSize;
@@ -80,6 +87,10 @@ typedef struct tagTHREADENTRY32 {
 	LONG tpBasePri;
 	LONG tpDeltaPri;
 	DWORD dwFlags;
+#ifdef _WIN32_WCE
+	DWORD th32AccessKey;
+	DWORD th32CurrentProcessID;
+#endif
 } THREADENTRY32,*PTHREADENTRY32,*LPTHREADENTRY32;
 typedef struct tagMODULEENTRY32W {
 	DWORD dwSize;
@@ -102,8 +113,14 @@ typedef struct tagMODULEENTRY32 {
 	BYTE *modBaseAddr;
 	DWORD modBaseSize;
 	HMODULE hModule;
-	char szModule[MAX_MODULE_NAME32 + 1];
-	char szExePath[MAX_PATH];
+#ifdef _WIN32_WCE
+       WCHAR szModule[MAX_PATH];
+	WCHAR szExePath[MAX_PATH];
+	DWORD dwFlags;
+#else
+	CHAR szModule[MAX_MODULE_NAME32 + 1];
+	CHAR szExePath[MAX_PATH];
+#endif
 } MODULEENTRY32,*PMODULEENTRY32,*LPMODULEENTRY32;
 BOOL WINAPI Heap32First(LPHEAPENTRY32,DWORD,DWORD);
 BOOL WINAPI Heap32ListFirst(HANDLE,LPHEAPLIST32);
@@ -121,7 +138,10 @@ BOOL WINAPI Thread32First(HANDLE,LPTHREADENTRY32);
 BOOL WINAPI Thread32Next(HANDLE,LPTHREADENTRY32);
 BOOL WINAPI Toolhelp32ReadProcessMemory(DWORD,LPCVOID,LPVOID,DWORD,LPDWORD);
 HANDLE WINAPI CreateToolhelp32Snapshot(DWORD,DWORD);
-#ifdef UNICODE
+#if (_WIN32_WCE >= 0x200)
+BOOL WINAPI CloseToolhelp32Snapshot(HANDLE hSnapshot);
+#endif
+#if defined(UNICODE) && !defined(_WIN32_WCE)
 #define LPMODULEENTRY32 LPMODULEENTRY32W
 #define LPPROCESSENTRY32 LPPROCESSENTRY32W
 #define MODULEENTRY32 MODULEENTRY32W
@@ -132,7 +152,7 @@ HANDLE WINAPI CreateToolhelp32Snapshot(DWORD,DWORD);
 #define PROCESSENTRY32 PROCESSENTRY32W
 #define Process32First Process32FirstW
 #define Process32Next Process32NextW
-#endif /* UNICODE */
+#endif /* UNICODE && !_WIN32_WCE */
 #ifdef __cplusplus
 }
 #endif

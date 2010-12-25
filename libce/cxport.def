@@ -1,0 +1,25 @@
+LIBRARY CXPORT
+EXPORTS
+CTEAllocMem
+CTECancelEvent
+CTEEnlargedUnsignedDivide
+CTEFreeMem
+CTEGetTimerState
+CTEIOControl
+CTEInitEvent
+CTEInitTimer
+CTEInitialize
+CTEScheduleEvent
+CTEStartFTimer
+CTEStartTimer
+CTEStopFTimer
+CTEStopTimer
+CXPortDumpInfo
+GetRegBinaryValue
+GetRegDWORDValue
+GetRegMultiSZValue
+GetRegSZValue
+SetRegBinaryValue
+SetRegDWORDValue
+SetRegMultiSZValue
+SetRegSZValue

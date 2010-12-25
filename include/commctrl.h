@@ -1147,7 +1147,7 @@ extern "C" {
 #define LVCF_WIDTH	2
 #define LVCF_TEXT	4
 #define LVCF_SUBITEM	8
-#if (_WIN32_IE >= 0x0300)
+#if (_WIN32_IE >= 0x0300) || (_WIN32_WCE >= 0x200)
 #define LVCF_IMAGE 16
 #define LVCF_ORDER 32
 #endif
@@ -2505,7 +2505,7 @@ typedef struct _LVCOLUMNW {
 	LPWSTR pszText;
 	int cchTextMax;
 	int iSubItem;
-#if (_WIN32_IE >= 0x0300)
+#if (_WIN32_IE >= 0x0300) || (_WIN32_WCE >= 0x200)
 	int iImage;
 	int iOrder;
 #endif
@@ -2826,7 +2826,9 @@ typedef struct tagREBARBANDINFOA {
 	UINT cyIntegral;
 	UINT cxIdeal;
 	LPARAM lParam;
+#if !defined(_WIN32_WCE)
 	UINT cxHeader;
+#endif
 #endif
 } REBARBANDINFOA,*LPREBARBANDINFOA;
 typedef struct tagREBARBANDINFOW {
@@ -2850,14 +2852,16 @@ typedef struct tagREBARBANDINFOW {
 	UINT cyIntegral;
 	UINT cxIdeal;
 	LPARAM lParam;
+#if !defined(_WIN32_WCE)
 	UINT cxHeader;
+#endif
 #endif
 } REBARBANDINFOW,*LPREBARBANDINFOW;
 typedef REBARBANDINFOA const *LPCREBARBANDINFOA;
 typedef REBARBANDINFOW const *LPCREBARBANDINFOW;
 #define REBARBANDINFOA_V3_SIZE CCSIZEOF_STRUCT(REBARBANDINFOA,wID)
 #define REBARBANDINFOW_V3_SIZE CCSIZEOF_STRUCT(REBARBANDINFOW, wID)
-#if (_WIN32_IE >= 0x0300)
+#if (_WIN32_IE >= 0x0300) || (_WIN32_WCE >= 0x0200)
 typedef struct tagNMLVODSTATECHANGE {
   NMHDR hdr;
   int iFrom;
@@ -2880,13 +2884,13 @@ typedef struct tagIMAGELISTDRAWPARAMS {
 	COLORREF rgbFg;
 	UINT fStyle;
 	DWORD dwRop;
-#if (_WIN32_WINNT >= 0x0501)
+#if (_WIN32_WINNT >= 0x0501) && !defined (_WIN32_WCE)
 	DWORD fState;
 	DWORD Frame;
 	COLORREF crEffect;
 #endif
 } IMAGELISTDRAWPARAMS,*LPIMAGELISTDRAWPARAMS;
-#endif /* (_WIN32_IE >= 0x0300) */
+#endif /* (_WIN32_IE >= 0x0300) || (_WIN32_WCE >= 0x0200) */
 #if (_WIN32_IE >= 0x0400)
 typedef struct tagNMREBARCHILDSIZE {
 	NMHDR hdr;
@@ -3089,7 +3093,7 @@ BOOL WINAPI ImageList_SetOverlayImage(HIMAGELIST,int,int);
 HIMAGELIST WINAPI ImageList_Read(LPSTREAM);
 BOOL WINAPI ImageList_Write(HIMAGELIST,LPSTREAM);
 #endif
-#if (_WIN32_IE >= 0x0400)
+#if (_WIN32_IE >= 0x0400) || (_WIN32_WCE >= 0x0200)
 HIMAGELIST WINAPI ImageList_Duplicate(HIMAGELIST himl);
 #endif
 void WINAPI InitCommonControls(void);
@@ -3319,9 +3323,13 @@ BOOL WINAPI _TrackMouseEvent(LPTRACKMOUSEEVENT);
 #define ListView_SetIconSpacing(w,x,y) (DWORD)SNDMSG((w),LVM_SETICONSPACING,0,MAKELONG(x,y))
 #define ListView_SubItemHitTest(w,p) (INT)SNDMSG((w),LVM_SUBITEMHITTEST,0,(LPARAM)(LPLVHITTESTINFO)(p))
 #define ListView_SetItemCountEx(w,i,f) (void)SNDMSG((w),LVM_SETITEMCOUNT,(WPARAM)(i),(LPARAM)(f))
+#endif
+#if (_WIN32_IE >= 0x0300) || (_WIN32_WCE >= 0x200)
 WINBOOL WINAPI ImageList_SetImageCount(HIMAGELIST,UINT);
 WINBOOL WINAPI ImageList_Copy(HIMAGELIST,int,HIMAGELIST,int,UINT);
 WINBOOL WINAPI ImageList_DrawIndirect(IMAGELISTDRAWPARAMS*);
+#endif
+#if (_WIN32_IE >= 0x0300)
 #define TabCtrl_SetMinTabWidth(hwnd,x) SNDMSG((hwnd),TCM_SETMINTABWIDTH,0,x)
 #define TabCtrl_DeselectAll(hwnd,fExcludeFocus) SNDMSG((hwnd),TCM_DESELECTALL,fExcludeFocus,0)
 #define TreeView_GetToolTips(w) (HWND)SNDMSG((w),TVM_GETTOOLTIPS,0,0)
@@ -3732,29 +3740,59 @@ typedef REBARBANDINFOA REBARBANDINFO,*LPREBARBANDINFO;
 #define RB_INSERTBAND RB_INSERTBANDA
 #define RB_SETBANDINFO RB_SETBANDINFOA
 #endif
+
+#if (_WIN32_WCE >= 0x200)
+
+#define CMDBAR_HELP 0x000B
+#define CMDBAR_OK 0xF000
+
+typedef struct tagCOMMANDBANDSRESTOREINFO {
+	UINT cbSize;
+	UINT wID;
+	UINT fStyle;
+	UINT cxRestored;
+	BOOL fMaximized;
+} COMMANDBANDSRESTOREINFO, *LPCOMMANDBANDSRESTOREINFO;
+#endif /* _WIN32_WCE >= 0x200 */
+
 #endif /* RC_INVOKED */
 
-#ifdef _WIN32_WCE               /* these are PPC only */
+#ifdef _WIN32_WCE
 
 COMMCTRLAPI HWND WINAPI CommandBar_Create(HINSTANCE, HWND, int); 
 COMMCTRLAPI BOOL WINAPI CommandBar_Show(HWND, BOOL); 
 COMMCTRLAPI int WINAPI CommandBar_AddBitmap(HWND, HINSTANCE, int, int, int, int); 
+#define CommandBar_InsertButton(hwnd,i,lptbbutton) ((BOOL)SendMessage((hwnd),TB_INSERTBUTTON,(i),(lptbbutton)))
 COMMCTRLAPI HWND WINAPI CommandBar_InsertComboBox(HWND, HINSTANCE, int, UINT, WORD, WORD); 
 COMMCTRLAPI BOOL WINAPI CommandBar_InsertMenubar(HWND, HINSTANCE, WORD, WORD );
 COMMCTRLAPI BOOL WINAPI CommandBar_InsertMenubarEx(HWND, HINSTANCE, LPTSTR, WORD);
 COMMCTRLAPI BOOL WINAPI CommandBar_DrawMenuBar(HWND, WORD); 
 COMMCTRLAPI HMENU WINAPI CommandBar_GetMenu(HWND, WORD); 
 COMMCTRLAPI BOOL WINAPI CommandBar_AddAdornments(HWND, DWORD, DWORD); 
-COMMCTRLAPI int WINAPI CommandBar_Height(HWND hwndCB); 
+COMMCTRLAPI int WINAPI CommandBar_Height(HWND);
 
-/* These two are not in the DLL */
-#define CommandBar_InsertButton(hwnd,i,lptbbutton)              \
-    SendMessage((hwnd),TB_INSERTBUTTON,(i),(lptbbutton))
-#define CommandBar_Destroy(hwnd)                                \
-    DestroyWindow(hwnd)
+#define CommandBar_AddButtons(h, cb, lp) \
+	    SendMessage((h), TB_ADDBUTTONS, (WPARAM)(cb), (LPARAM)(lp))
 
+
+#define CommandBar_InsertButton(hwnd,i,lptbbutton) \
+	((BOOL)SendMessage((hwnd),TB_INSERTBUTTON,(i),(lptbbutton)))
+#define CommandBar_Destroy(hwnd) ((void)DestroyWindow(hwnd))
 
 #endif /* _WIN32_WCE */
+
+#if (_WIN32_WCE >= 0x0200)
+
+COMMCTRLAPI BOOL WINAPI CommandBands_AddAdornments(HWND,HINSTANCE,DWORD,LPREBARBANDINFO);
+COMMCTRLAPI BOOL WINAPI CommandBands_AddBands(HWND,HINSTANCE,UINT,LPREBARBANDINFO);
+COMMCTRLAPI HWND WINAPI CommandBands_Create(HINSTANCE,HWND,UINT,DWORD,HIMAGELIST);
+COMMCTRLAPI HWND WINAPI CommandBands_GetCommandBar(HWND,UINT);
+COMMCTRLAPI BOOL WINAPI CommandBands_GetRestoreInformation(HWND,UINT,LPCOMMANDBANDSRESTOREINFO);
+COMMCTRLAPI BOOL WINAPI CommandBands_Show(HWND,BOOL);
+
+#define CommandBands_Height(hwnd) ((UINT)SendMessage((hwnd),RB_GETBARHEIGHT,0,0))
+
+#endif /* _WIN32_WCE >= 0x200 */
 
 #ifdef __cplusplus
 }

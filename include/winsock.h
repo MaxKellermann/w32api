@@ -16,6 +16,10 @@
 
 #define _GNU_H_WINDOWS32_SOCKETS
 
+#ifndef _WINSOCKAPI_
+#define _WINSOCKAPI_
+#endif
+
 #include <windows.h>
 
 #ifdef __cplusplus
@@ -160,8 +164,12 @@ struct  protoent {
 #define IPPROTO_UDP	17
 #define IPPROTO_IDP	22
 #define IPPROTO_ND	77
+#define	IPPROTO_RM	113
 #define IPPROTO_RAW	255
 #define IPPROTO_MAX	256
+
+#define BTHPROTO_RFCOMM	3
+
 #define IPPORT_ECHO	7
 #define IPPORT_DISCARD	9
 #define IPPORT_SYSTAT	11
@@ -313,8 +321,15 @@ struct ip_mreq {
 #define	AF_BAN	21
 #define AF_ATM	22
 #define AF_INET6	23
+#ifdef _WIN32_WCE
+#define AF_IRDA     22
+#else
+#define AF_IRDA     26
+#endif
+#define	AF_BTH	32
+#define	AF_BT	32
 #if !(defined (__INSIDE_CYGWIN__) || defined (__INSIDE_MSYS__))
-#define AF_MAX	24
+#define AF_MAX	33
 struct sockaddr {
 	u_short sa_family;
 	char	sa_data[14];
@@ -350,6 +365,8 @@ struct sockproto {
 #define PF_BAN	AF_BAN
 #define PF_ATM	AF_ATM
 #define PF_INET6	AF_INET6
+#define PF_IRDA	AF_IRDA
+#define	PF_BTH	AF_BTH
 #define PF_MAX	AF_MAX
 #define SOL_SOCKET	0xffff
 #define SOMAXCONN	5
@@ -457,8 +474,13 @@ DECLARE_STDCALL_P(struct protoent *) getprotobynumber(int);
 DECLARE_STDCALL_P(struct protoent *) getprotobyname(const char*);
 int PASCAL WSAStartup(WORD,LPWSADATA);
 int PASCAL WSACleanup(void);
+#ifdef _WIN32_WCE
+#define WSASetLastError SetLastError
+#define WSAGetLastError GetLastError
+#else
 void PASCAL WSASetLastError(int);
 int PASCAL WSAGetLastError(void);
+#endif
 BOOL PASCAL WSAIsBlocking(void);
 int PASCAL WSAUnhookBlockingHook(void);
 FARPROC PASCAL WSASetBlockingHook(FARPROC);

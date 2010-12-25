@@ -1,0 +1,35 @@
+/*
+ * Version information about CeGCC
+ */
+#ifndef	_CEGCC_H_
+#define	_CEGCC_H_
+
+#ifndef __CEGCC_VERSION__
+#error __CEGCC_VERSION__ isn't defined by the compiler. Huh?
+#endif
+
+#undef __CEGCC_VERSION__
+
+/* Automatic changes below */
+#define	__CEGCC_VERSION_MAJOR__	9
+#define	__CEGCC_VERSION_MINOR__ 99
+#define	__CEGCC_VERSION_PATCHLEVEL__ 9
+#define	__CEGCC_BUILD_DATE__ 99999999
+/* Automatic changes above */
+
+#define	__CEGCC_VERSION__	\
+	(((__CEGCC_VERSION_MAJOR__) << 16) \
+	 + ((__CEGCC_VERSION_MINOR__) << 8) \
+	 + (__CEGCC_PATCHLEVEL__))
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern int _CeGCCVersion(void);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif	/* _CEGCC_H_ */

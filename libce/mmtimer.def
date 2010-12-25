@@ -1,0 +1,10 @@
+LIBRARY MMTIMER
+EXPORTS
+timeBeginPeriod
+timeEndPeriod
+timeGetDevCaps
+timeGetHardwareFrequency
+timeGetTime
+timeGetTimeSinceInterrupt
+timeKillEvent
+timeSetEvent

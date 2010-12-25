@@ -14,9 +14,16 @@ SHELL = @SHELL@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
-build_alias = @build@
-host_alias = @host@
-target_alias = @target@
+SUBDIRS = @SUBDIRS@
+
+build = @build@
+build_alias = @build_alias@
+host = @host@
+host_alias = @host_alias@
+target = @target@
+target_alias = @target_alias@
+
+with_cross_host = @with_cross_host@
 prefix = @prefix@
 conf_prefix = @prefix@
 # FIXME: this needs an appropriate AC_SUBST
@@ -26,23 +33,33 @@ program_transform_name = @program_transform_name@
 exec_prefix = @exec_prefix@
 bindir = @bindir@
 libdir = @libdir@
-tooldir = $(exec_prefix)/$(target_alias)
+tooldir = $(exec_prefix)/$(host_alias)
 datadir = @datadir@
 infodir = @infodir@
 includedir = @includedir@
 
-CC = @CC@
+CC := @CC@
+override CC := ${filter-out -L% -B%,${shell echo $(CC) | sed -e 's%\(-isystem\|-iwithprefixbefore\)  *[^ ]*\( \|$$\)% %g'}}
+# FIXME: Which is it, CC or CC_FOR_TARGET?
 CC_FOR_TARGET = $(CC)
+AS_FOR_TARGET = $(AS)
 CFLAGS = @CFLAGS@
+CXXFLAGS = @CXXFLAGS@
 
-DLLTOOL = @DLLTOOL@
 AS = @AS@
-AS_FOR_TARGET = $(AS_FOR_TARGET)
-WINDRES = @WINDRES@
-
-RANLIB = @RANLIB@
 AR = @AR@
 LD = @LD@
+AR_FLAGS = rcv
+RANLIB = @RANLIB@
+DLLTOOL = @DLLTOOL@
+DLLTOOLFLAGS =
+DLLTOOL_FOR_TARGET = $(DLLTOOL)
+DLLTOOL_FLAGS = --as $(AS_FOR_TARGET)
+DLLWRAP = @DLLWRAP@
+DLLWRAP_FOR_TARGET = $(DLLWRAP)
+DLLWRAP_FLAGS = --dlltool $(DLLTOOL) --as $(AS) --driver-name $(CC)
+WINDRES = @WINDRES@
+WINDRES_FOR_TARGET = @WINDRES@
 
 TAR = tar
 TARFLAGS = --lzma -
@@ -51,21 +68,37 @@ TARFILEEXT = .tar.lzma
 FLAGS_TO_PASS = \
 	AS="$(AS)" \
 	CC="$(CC)" \
-	CPPFLAGS="$(CPPFLAGS)" \
-	CFLAGS="$(CFLAGS)" \
-	CXXFLAGS="$(CXXFLAGS)" \
+	CFLAGS="$(CFLAGS) $(CFLAGS_COMMON) $(CFLAGS_CONFIG)" \
+	CXXFLAGS="$(CXXFLAGS) $(CFLAGS_COMMON) $(CFLAGS_CONFIG)" \
+	CPPFLAGS="$(CPPFLAGS) $(CFLAGS_COMMON) $(CFLAGS_CONFIG)" \
 	AR="$(AR)" \
 	RANLIB="$(RANLIB)" \
 	LD="$(LD)" \
 	DLLTOOL="$(DLLTOOL)" \
+	exec_prefix="$(exec_prefix)" \
+	bindir="$(bindir)" \
+	libdir="$(libdir)" \
+	tooldir="$(tooldir)" \
+	datadir="$(datadir)" \
+	infodir="$(infodir)" \
+	includedir="$(includedir)" \
+	inst_bindir="$(inst_bindir)" \
+	inst_includedir="$(inst_includedir)" \
+	inst_libdir="$(inst_libdir)" \
+	inst_docdir="$(inst_docdir)" \
+	prefix="$(prefix)" \
+	build="$(build)" \
+	build_alias="$(build_alias)" \
+	host="$(host)" \
+	host_alias="$(host_alias)" \
+	target="$(target)" \
+	target_alias="$(target_alias)" \
 	TAR="$(TAR)" \
 	TARFLAGS="$(TARFLAGS)" \
 	TARFILEEXT="$(TARFILEEXT)" \
 	WINDRES="$(WINDRES)"
 
 # end config section
-
-SUBDIRS = lib
 
 PACKAGE = w32api
 VERSION = 3.15
@@ -74,7 +107,7 @@ CYGRELEASE = 1
 DIST_FILES = Makefile.in configure.in configure config.guess config.sub \
 aclocal.m4 install-sh README.w32api ChangeLog TODO CONTRIBUTIONS
 
-all: lib
+all: $(SUBDIRS)
 
 %-subdirs:
 	for i in $(SUBDIRS); do \
@@ -84,10 +117,13 @@ all: lib
 lib:
 	$(MAKE) $(FLAGS_TO_PASS) -C $@
 
+libce:
+	$(MAKE) $(FLAGS_TO_PASS) -C $@
+
 test:
 	$(MAKE) -C lib test $(FLAGS_TO_PASS)
 
-install uninstall:
+install install-headers uninstall:
 	for i in $(SUBDIRS); do \
 		(cd $$i; $(MAKE) $@ $(FLAGS_TO_PASS)); \
 	done
@@ -168,4 +204,4 @@ distclean: clean-top
 	rm -f Makefile config.status config.log config.cache TAGS *~
 maintainer-clean: maintainer-clean-subdirs
 
-.PHONY: lib test 
+.PHONY: lib libce test 

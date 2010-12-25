@@ -1,0 +1,27 @@
+LIBRARY MSMQRT
+EXPORTS
+MQBeginTransaction
+MQCloseCursor
+MQCloseQueue
+MQCreateCursor
+MQCreateQueue
+MQDeleteQueue
+MQFreeMemory
+MQFreeSecurityContext
+MQGetMachineProperties
+MQGetQueueProperties
+MQGetQueueSecurity
+MQGetSecurityContext
+MQHandleToFormatName
+MQInstanceToFormatName
+MQLocateBegin
+MQLocateEnd
+MQLocateNext
+MQMgmtAction
+MQMgmtGetInfo
+MQOpenQueue
+MQPathNameToFormatName
+MQReceiveMessage
+MQSendMessage
+MQSetQueueProperties
+MQSetQueueSecurity

@@ -1,0 +1,17 @@
+LIBRARY SMS
+EXPORTS
+SmsClearMessageNotification
+SmsClose
+SmsGetBroadcastMsgRanges
+SmsGetMessageSize
+SmsGetMessageStatus
+SmsGetPhoneNumber
+SmsGetSMSC
+SmsGetTime
+SmsOpen
+SmsReadMessage
+SmsReceiveAllMessagesFromSIM
+SmsSendMessage
+SmsSetBroadcastMsgRanges
+SmsSetMessageNotification
+SmsSetSMSC
