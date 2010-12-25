@@ -37,6 +37,17 @@ extern "C" {
 #endif
 #endif
 
+/*
+ * Macro to deal with wide names - WinCE functions not receiving LPTSTR
+ * directly don't have W suffix, even though they are implicitly wide
+ * (expect wide strings in structures passed, etc.)
+ */
+#ifdef _WIN32_WCE
+#define _WNAME(name) name
+#else
+#define _WNAME(name) name ## W
+#endif
+
 #ifndef WIN32
 #define WIN32
 #endif
