@@ -742,13 +742,10 @@ typedef struct tagCOLORKEY {
 #define CK_NOCOLORKEY 0x00000000
 #define CK_INDEX 0x00000001
 #define CK_RGB 0x00000002
-  /*typedef struct {
+typedef struct {
 	DWORD dw1;
 	DWORD dw2;
-} DDCOLORKEY;
-typedef DDCOLORKEY *LPDDCOLORKEY;
-  */
-
+} DDCOLORKEY,*LPDDCOLORKEY;
 typedef struct tagDVD_AudioAttributes {
 	DVD_AUDIO_APPMODE AppMode;
 	DVD_AUDIO_FORMAT AudioFormat; 
@@ -903,7 +900,7 @@ typedef struct _NORMALIZEDRECT {
 } NORMALIZEDRECT,*PNORMALIZEDRECT;
 #define MAX_PIN_NAME 128
 typedef struct _PinInfo {
-       struct IBaseFilter *pFilter;
+	IBaseFilter *pFilter;
 	PIN_DIRECTION dir;
 	WCHAR achName[MAX_PIN_NAME];
 } PIN_INFO;
@@ -999,7 +996,6 @@ typedef struct _VIDEO_STREAM_CONFIG_CAPS {
 	LONG MinBitsPerSecond;
 	LONG MaxBitsPerSecond;
 } VIDEO_STREAM_CONFIG_CAPS;
-/**********
 typedef struct tagVMRALLOCATIONINFO {
 	DWORD dwFlags;
 	LPBITMAPINFOHEADER lpHdr;
@@ -1010,7 +1006,6 @@ typedef struct tagVMRALLOCATIONINFO {
 	DWORD dwInterlaceFlags;
 	SIZE szNativeSize;
 } VMRALLOCATIONINFO;
-***********/
 /**********
 typedef struct _VMRALPHABITMAP {
 	DWORD dwFlags;
@@ -1039,8 +1034,8 @@ typedef struct _VMRFrequency {
 	DWORD dwDenominator;
 } VMRFrequency;
 typedef struct tagVMRGUID {
-       LPGUID pGUID;
-       _GUID GUID;
+	GUID *pGUID;
+	GUID GUID;
 } VMRGUID;
 typedef struct tagVMRMONITORINFO {
 	VMRGUID guid;
@@ -1083,7 +1078,6 @@ typedef struct _VMRVIDEOSTREAMINFO {
 	NORMALIZEDRECT rNormal;
 } VMRVIDEOSTREAMINFO;
 **********/
-
 /*--- DirectShow Reference - Interfaces */
 EXTERN_C const IID IID_IAMAnalogVideoDecoder;
 #define INTERFACE IAMAnalogVideoDecoder
