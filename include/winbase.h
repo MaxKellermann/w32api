@@ -917,11 +917,11 @@ typedef struct _CRITICAL_SECTION_DEBUG {
 } CRITICAL_SECTION_DEBUG,*PCRITICAL_SECTION_DEBUG;
 #ifdef UNDER_CE
 typedef struct _CRITICAL_SECTION {
-	DWORD LockCount;   // Nesting count on critical section
-        HANDLE OwnerThread; 	// Handle of owner thread
-	HANDLE hCrit;	// Handle to this critical section
-	DWORD needtrap;	// Trap in when freeing critical section
-	DWORD dwContentions;	// Count of contentions
+	DWORD LockCount;
+	HANDLE OwnerThread;
+	HANDLE hCrit;
+	DWORD needtrap;
+	DWORD dwContentions;
 } CRITICAL_SECTION,*PCRITICAL_SECTION,*LPCRITICAL_SECTION;
 #else
 typedef struct _CRITICAL_SECTION {
