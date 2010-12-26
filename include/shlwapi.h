@@ -226,12 +226,8 @@ WINSHLWAPI LPSTR WINAPI PathBuildRootA(LPSTR,int);
 WINSHLWAPI LPWSTR WINAPI PathBuildRootW(LPWSTR,int);
 WINSHLWAPI BOOL WINAPI PathCanonicalizeA(LPSTR,LPCSTR);
 WINSHLWAPI BOOL WINAPI PathCanonicalizeW(LPWSTR,LPCWSTR);
-#ifdef _WIN32_WCE
-WINSHLWAPI LPWSTR WINAPI PathCombine(LPWSTR,LPCWSTR,LPCWSTR);
-#else
 WINSHLWAPI LPSTR WINAPI PathCombineA(LPSTR,LPCSTR,LPCSTR);
-WINSHLWAPI LPWSTR WINAPI PathCombineW(LPWSTR,LPCWSTR,LPCWSTR);
-#endif
+WINSHLWAPI LPWSTR WINAPI _WNAME(PathCombine)(LPWSTR,LPCWSTR,LPCWSTR);
 WINSHLWAPI int WINAPI PathCommonPrefixA(LPCSTR,LPCSTR,LPSTR);
 WINSHLWAPI int WINAPI PathCommonPrefixW(LPCWSTR,LPCWSTR,LPWSTR);
 WINSHLWAPI BOOL WINAPI PathCompactPathA(HDC,LPSTR,UINT);
@@ -493,9 +489,7 @@ HRESULT WINAPI DllInstall(BOOL,LPCWSTR);
 #define PathAppend PathAppendW
 #define PathBuildRoot PathBuildRootW
 #define PathCanonicalize PathCanonicalizeW
-#ifndef _WIN32_WCE
-#define PathCombine PathCombineW
-#endif
+#define PathCombine _WNAME(PathCombine)
 #define PathCommonPrefix PathCommonPrefixW
 #define PathCompactPath PathCompactPathW
 #define PathCompactPathEx PathCompactPathExW
