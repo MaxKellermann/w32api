@@ -1050,6 +1050,44 @@ typedef struct _SYSTEM_POWER_STATUS {
 	DWORD BatteryFullLifeTime;
 } SYSTEM_POWER_STATUS,*LPSYSTEM_POWER_STATUS;
 #endif
+#ifdef _WIN32_WCE
+typedef struct _SYSTEM_POWER_STATUS_EX {
+  BYTE ACLineStatus;
+  BYTE BatteryFlag;
+  BYTE BatteryLifePercent;
+  BYTE Reserved1;
+  DWORD BatteryLifeTime;
+  DWORD BatteryFullLifeTime;
+  BYTE Reserved2;
+  BYTE BackupBatteryFlag;
+  BYTE BackupBatteryLifePercent;
+  BYTE Reserved3;
+  DWORD BackupBatteryLifeTime;
+  DWORD BackupBatteryFullLifeTime;
+} SYSTEM_POWER_STATUS_EX, *PSYSTEM_POWER_STATUS_EX, *LPSYSTEM_POWER_STATUS_EX;
+typedef struct _SYSTEM_POWER_STATUS_EX2 {
+  BYTE ACLineStatus;
+  BYTE BatteryFlag;
+  BYTE BatteryLifePercent;
+  BYTE Reserved1;
+  DWORD BatteryLifeTime;
+  DWORD BatteryFullLifeTime;
+  BYTE Reserved2;
+  BYTE BackupBatteryFlag;
+  BYTE BackupBatteryLifePercent;
+  BYTE Reserved3;
+  DWORD BackupBatteryLifeTime;
+  DWORD BackupBatteryFullLifeTime;
+  DWORD BatteryVoltage;
+  DWORD BatteryCurrent;
+  DWORD BatteryAverageCurrent;
+  DWORD BatteryAverageInterval;
+  DWORD BatterymAHourConsumed;
+  DWORD BatteryTemperature;
+  DWORD BackupBatteryVoltage;
+  BYTE BatteryChemistry;
+} SYSTEM_POWER_STATUS_EX2, *PSYSTEM_POWER_STATUS_EX2, *LPSYSTEM_POWER_STATUS_EX2;
+#endif
 typedef struct _TIME_ZONE_INFORMATION {
 	LONG Bias;
 	WCHAR StandardName[32];
@@ -1158,44 +1196,6 @@ typedef struct _WIN_CERTIFICATE {
       WORD wCertificateType;
       BYTE bCertificate[1];
 } WIN_CERTIFICATE, *LPWIN_CERTIFICATE;
-#ifdef _WIN32_WCE
-typedef struct _SYSTEM_POWER_STATUS_EX {
-  BYTE ACLineStatus;
-  BYTE BatteryFlag;
-  BYTE BatteryLifePercent;
-  BYTE Reserved1;
-  DWORD BatteryLifeTime;
-  DWORD BatteryFullLifeTime;
-  BYTE Reserved2;
-  BYTE BackupBatteryFlag;
-  BYTE BackupBatteryLifePercent;
-  BYTE Reserved3;
-  DWORD BackupBatteryLifeTime;
-  DWORD BackupBatteryFullLifeTime;
-} SYSTEM_POWER_STATUS_EX, *PSYSTEM_POWER_STATUS_EX, *LPSYSTEM_POWER_STATUS_EX;
-typedef struct _SYSTEM_POWER_STATUS_EX2 {
-  BYTE ACLineStatus;
-  BYTE BatteryFlag;
-  BYTE BatteryLifePercent;
-  BYTE Reserved1;
-  DWORD BatteryLifeTime;
-  DWORD BatteryFullLifeTime;
-  BYTE Reserved2;
-  BYTE BackupBatteryFlag;
-  BYTE BackupBatteryLifePercent;
-  BYTE Reserved3;
-  DWORD BackupBatteryLifeTime;
-  DWORD BackupBatteryFullLifeTime;
-  DWORD BatteryVoltage;
-  DWORD BatteryCurrent;
-  DWORD BatteryAverageCurrent;
-  DWORD BatteryAverageInterval;
-  DWORD BatterymAHourConsumed;
-  DWORD BatteryTemperature;
-  DWORD BackupBatteryVoltage;
-  BYTE BatteryChemistry;
-} SYSTEM_POWER_STATUS_EX2, *PSYSTEM_POWER_STATUS_EX2, *LPSYSTEM_POWER_STATUS_EX2;
-#endif
 #if (_WIN32_WINNT >= 0x0501)
 typedef struct tagACTCTXA {
 	ULONG cbSize;
