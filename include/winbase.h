@@ -958,10 +958,16 @@ typedef struct _WIN32_FIND_DATAA {
 	FILETIME ftLastWriteTime;
 	DWORD nFileSizeHigh;
 	DWORD nFileSizeLow;
+#ifdef _WIN32_WCE
+    DWORD dwOID; 
+#else
 	DWORD dwReserved0;
 	DWORD dwReserved1;
+#endif
 	CHAR cFileName[MAX_PATH];
+#ifndef _WIN32_WCE
 	CHAR cAlternateFileName[14];
+#endif
 } WIN32_FIND_DATAA,*PWIN32_FIND_DATAA,*LPWIN32_FIND_DATAA;
 typedef struct _WIN32_FIND_DATAW {
 	DWORD dwFileAttributes;
