@@ -3757,27 +3757,27 @@ typedef struct tagCOMMANDBANDSRESTOREINFO {
 
 #endif /* RC_INVOKED */
 
-#ifdef _WIN32_WCE
+#ifdef _WIN32_WCE               /* these are PPC only */
 
 COMMCTRLAPI HWND WINAPI CommandBar_Create(HINSTANCE, HWND, int); 
 COMMCTRLAPI BOOL WINAPI CommandBar_Show(HWND, BOOL); 
 COMMCTRLAPI int WINAPI CommandBar_AddBitmap(HWND, HINSTANCE, int, int, int, int); 
-#define CommandBar_InsertButton(hwnd,i,lptbbutton) ((BOOL)SendMessage((hwnd),TB_INSERTBUTTON,(i),(lptbbutton)))
 COMMCTRLAPI HWND WINAPI CommandBar_InsertComboBox(HWND, HINSTANCE, int, UINT, WORD, WORD); 
 COMMCTRLAPI BOOL WINAPI CommandBar_InsertMenubar(HWND, HINSTANCE, WORD, WORD );
 COMMCTRLAPI BOOL WINAPI CommandBar_InsertMenubarEx(HWND, HINSTANCE, LPTSTR, WORD);
 COMMCTRLAPI BOOL WINAPI CommandBar_DrawMenuBar(HWND, WORD); 
 COMMCTRLAPI HMENU WINAPI CommandBar_GetMenu(HWND, WORD); 
 COMMCTRLAPI BOOL WINAPI CommandBar_AddAdornments(HWND, DWORD, DWORD); 
-COMMCTRLAPI int WINAPI CommandBar_Height(HWND);
+COMMCTRLAPI int WINAPI CommandBar_Height(HWND hwndCB); 
 
-#define CommandBar_AddButtons(h, cb, lp) \
-	    SendMessage((h), TB_ADDBUTTONS, (WPARAM)(cb), (LPARAM)(lp))
+/* These two are not in the DLL */
+#define CommandBar_InsertButton(hwnd,i,lptbbutton)              \
+    ((BOOL)SendMessage((hwnd),TB_INSERTBUTTON,(i),(lptbbutton)))
+#define CommandBar_Destroy(hwnd)                                \
+    ((void)DestroyWindow(hwnd))
+#define CommandBar_AddButtons(h, cb, lp)                        \
+    SendMessage((h), TB_ADDBUTTONS, (WPARAM)(cb), (LPARAM)(lp))
 
-
-#define CommandBar_InsertButton(hwnd,i,lptbbutton) \
-	((BOOL)SendMessage((hwnd),TB_INSERTBUTTON,(i),(lptbbutton)))
-#define CommandBar_Destroy(hwnd) ((void)DestroyWindow(hwnd))
 
 #endif /* _WIN32_WCE */
 
