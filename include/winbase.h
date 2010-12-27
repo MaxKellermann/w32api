@@ -916,7 +916,7 @@ typedef struct _CRITICAL_SECTION_DEBUG {
 	DWORD ContentionCount;
 	DWORD Spare [2];
 } CRITICAL_SECTION_DEBUG,*PCRITICAL_SECTION_DEBUG;
-#ifdef UNDER_CE
+#ifdef _WIN32_WCE
 typedef struct _CRITICAL_SECTION {
 	DWORD LockCount;
 	HANDLE OwnerThread;

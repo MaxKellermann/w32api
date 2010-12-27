@@ -41,7 +41,7 @@ extern "C" {
  * These are also be defined in winsock.h,
  * but values have changed for WinSock2 interface
  */
-#ifdef UNDER_CE
+#ifdef _WIN32_WCE
 /* Looks like CE needs the "old" values */
 #define IP_TOS			8
 #define IP_TTL			7
