@@ -1561,18 +1561,12 @@ BOOL WINAPI sndPlaySoundW(LPCWSTR,UINT);
 BOOL WINAPI PlaySoundA(LPCSTR,HMODULE,DWORD);
 BOOL WINAPI PlaySoundW(LPCWSTR,HMODULE,DWORD);
 UINT WINAPI waveOutGetNumDevs(void);
-#ifdef _WIN32_WCE
-#define waveOutGetDevCapsW waveOutGetDevCaps
-#define waveOutGetErrorTextW waveOutGetErrorText
-#define waveInGetDevCapsW waveInGetDevCaps
-#define waveInGetErrorTextW waveInGetErrorText
-#endif
 MMRESULT WINAPI waveOutGetDevCapsA(UINT,LPWAVEOUTCAPSA,UINT);
-MMRESULT WINAPI waveOutGetDevCapsW(UINT,LPWAVEOUTCAPSW,UINT);
+MMRESULT WINAPI _WNAME(waveOutGetDevCaps)(UINT,LPWAVEOUTCAPSW,UINT);
 MMRESULT WINAPI waveOutGetVolume(HWAVEOUT,PDWORD);
 MMRESULT WINAPI waveOutSetVolume(HWAVEOUT,DWORD);
 MMRESULT WINAPI waveOutGetErrorTextA(MMRESULT,LPSTR,UINT);
-MMRESULT WINAPI waveOutGetErrorTextW(MMRESULT,LPWSTR,UINT);
+MMRESULT WINAPI _WNAME(waveOutGetErrorText)(MMRESULT,LPWSTR,UINT);
 MMRESULT WINAPI waveOutOpen(LPHWAVEOUT,UINT,LPCWAVEFORMATEX,DWORD,DWORD,DWORD);
 MMRESULT WINAPI waveOutClose(HWAVEOUT);
 MMRESULT WINAPI waveOutPrepareHeader(HWAVEOUT,LPWAVEHDR,UINT);
@@ -1591,9 +1585,9 @@ MMRESULT WINAPI waveOutGetID(HWAVEOUT,LPUINT);
 MMRESULT WINAPI waveOutMessage(HWAVEOUT,UINT,DWORD,DWORD);
 UINT WINAPI waveInGetNumDevs(void);
 MMRESULT WINAPI waveInGetDevCapsA(UINT,LPWAVEINCAPSA,UINT);
-MMRESULT WINAPI waveInGetDevCapsW(UINT,LPWAVEINCAPSW,UINT);
+MMRESULT WINAPI _WNAME(waveInGetDevCaps)(UINT,LPWAVEINCAPSW,UINT);
 MMRESULT WINAPI waveInGetErrorTextA(MMRESULT,LPSTR,UINT);
-MMRESULT WINAPI waveInGetErrorTextW(MMRESULT,LPWSTR,UINT);
+MMRESULT WINAPI _WNAME(waveInGetErrorText)(MMRESULT,LPWSTR,UINT);
 MMRESULT WINAPI waveInOpen(LPHWAVEIN,UINT,LPCWAVEFORMATEX,DWORD,DWORD,DWORD);
 MMRESULT WINAPI waveInClose(HWAVEIN);
 MMRESULT WINAPI waveInPrepareHeader(HWAVEIN,LPWAVEHDR,UINT);
@@ -1655,24 +1649,18 @@ MMRESULT WINAPI auxSetVolume(UINT,DWORD);
 MMRESULT WINAPI auxGetVolume(UINT,PDWORD);
 MMRESULT WINAPI auxOutMessage(UINT,UINT,DWORD,DWORD);
 UINT WINAPI mixerGetNumDevs(void);
-#ifdef _WIN32_WCE
-#define mixerGetDevCapsW mixerGetDevCaps
-#define mixerGetLineInfoW mixerGetLineInfo
-#define mixerGetLineControlsW mixerGetLineControls
-#define mixerGetControlDetailsW mixerGetControlDetails
-#endif
 MMRESULT WINAPI mixerGetDevCapsA(UINT,LPMIXERCAPSA,UINT);
-MMRESULT WINAPI mixerGetDevCapsW(UINT,LPMIXERCAPSW,UINT);
+MMRESULT WINAPI _WNAME(mixerGetDevCaps)(UINT,LPMIXERCAPSW,UINT);
 MMRESULT WINAPI mixerOpen(LPHMIXER,UINT,DWORD,DWORD,DWORD);
 MMRESULT WINAPI mixerClose(HMIXER);
 DWORD WINAPI mixerMessage(HMIXER,UINT,DWORD,DWORD);
 MMRESULT WINAPI mixerGetLineInfoA(HMIXEROBJ,LPMIXERLINEA,DWORD);
-MMRESULT WINAPI mixerGetLineInfoW(HMIXEROBJ,LPMIXERLINEW,DWORD);
+MMRESULT WINAPI _WNAME(mixerGetLineInfo)(HMIXEROBJ,LPMIXERLINEW,DWORD);
 MMRESULT WINAPI mixerGetID(HMIXEROBJ,PUINT,DWORD);
 MMRESULT WINAPI mixerGetLineControlsA(HMIXEROBJ,LPMIXERLINECONTROLSA,DWORD);
-MMRESULT WINAPI mixerGetLineControlsW(HMIXEROBJ,LPMIXERLINECONTROLSW,DWORD);
+MMRESULT WINAPI _WNAME(mixerGetLineControls)(HMIXEROBJ,LPMIXERLINECONTROLSW,DWORD);
 MMRESULT WINAPI mixerGetControlDetailsA(HMIXEROBJ,LPMIXERCONTROLDETAILS,DWORD);
-MMRESULT WINAPI mixerGetControlDetailsW(HMIXEROBJ,LPMIXERCONTROLDETAILS,DWORD);
+MMRESULT WINAPI _WNAME(mixerGetControlDetails)(HMIXEROBJ,LPMIXERCONTROLDETAILS,DWORD);
 MMRESULT WINAPI mixerSetControlDetails(HMIXEROBJ,LPMIXERCONTROLDETAILS,DWORD);
 MMRESULT WINAPI timeGetSystemTime(LPMMTIME,UINT);
 DWORD WINAPI timeGetTime(void);
@@ -1875,23 +1863,19 @@ typedef MCI_OVLY_WINDOW_PARMSW MCI_OVLY_WINDOW_PARMS,*PMCI_OVLY_WINDOW_PARMS,*LP
 typedef MCI_OVLY_SAVE_PARMSW MCI_OVLY_SAVE_PARMS,*PMCI_OVLY_SAVE_PARMS,*LPMCI_OVLY_SAVE_PARMS;
 #define sndPlaySound sndPlaySoundW
 #define PlaySound PlaySoundW
-#ifndef _WIN32_WCE
-#define waveOutGetDevCaps waveOutGetDevCapsW
-#define waveOutGetErrorText waveOutGetErrorTextW
-#define waveInGetDevCaps waveInGetDevCapsW
-#define waveInGetErrorText waveInGetErrorTextW
-#endif
+#define waveOutGetDevCaps _WNAME(waveOutGetDevCaps)
+#define waveOutGetErrorText _WNAME(waveOutGetErrorText)
+#define waveInGetDevCaps _WNAME(waveInGetDevCaps)
+#define waveInGetErrorText _WNAME(waveInGetErrorText)
 #define midiOutGetDevCaps midiOutGetDevCapsW
 #define midiOutGetErrorText midiOutGetErrorTextW
 #define midiInGetDevCaps midiInGetDevCapsW
 #define midiInGetErrorText midiInGetErrorTextW
 #define auxGetDevCaps auxGetDevCapsW
-#ifndef _WIN32_WCE
-#define mixerGetDevCaps mixerGetDevCapsW
-#define mixerGetLineInfo mixerGetLineInfoW
-#define mixerGetLineControls mixerGetLineControlsW
-#define mixerGetControlDetails mixerGetControlDetailsW
-#endif
+#define mixerGetDevCaps _WNAME(mixerGetDevCaps)
+#define mixerGetLineInfo _WNAME(mixerGetLineInfo)
+#define mixerGetLineControls _WNAME(mixerGetLineControls)
+#define mixerGetControlDetails _WNAME(mixerGetControlDetails)
 #define joyGetDevCaps joyGetDevCapsW
 #define mmioInstallIOProc mmioInstallIOProcW
 #define mmioStringToFOURCC mmioStringToFOURCCW
