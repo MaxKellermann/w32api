@@ -525,12 +525,8 @@ typedef struct tagPDEXW {
 } PRINTDLGEXW, *LPPRINTDLGEXW;
 #endif /* WINVER >= 0x0500 */
 
-#ifdef _WIN32_WCE
-BOOL WINAPI ChooseColor(LPCHOOSECOLORW);
-#else
 BOOL WINAPI ChooseColorA(LPCHOOSECOLORA);
-BOOL WINAPI ChooseColorW(LPCHOOSECOLORW);
-#endif
+BOOL WINAPI _WNAME(ChooseColor)(LPCHOOSECOLORW);
 BOOL WINAPI ChooseFontA(LPCHOOSEFONTA);
 BOOL WINAPI ChooseFontW(LPCHOOSEFONTW);
 DWORD WINAPI CommDlgExtendedError(void);
@@ -545,11 +541,7 @@ BOOL WINAPI GetSaveFileNameW(LPOPENFILENAMEW);
 BOOL WINAPI PageSetupDlgA(LPPAGESETUPDLGA);
 BOOL WINAPI PageSetupDlgW(LPPAGESETUPDLGW);
 BOOL WINAPI PrintDlgA(LPPRINTDLGA);
-#ifndef _WIN32_WCE
-BOOL WINAPI PrintDlgW(LPPRINTDLGW);
-#else
-BOOL WINAPI PrintDlg(LPPRINTDLGW);
-#endif
+BOOL WINAPI _WNAME(PrintDlg)(LPPRINTDLGW);
 HWND WINAPI ReplaceTextA(LPFINDREPLACEA);
 HWND WINAPI ReplaceTextW(LPFINDREPLACEW);
 #if (WINVER >= 0x0500) && !defined (_OBJC_NO_COM)
@@ -572,18 +564,14 @@ typedef OPENFILENAMEW OPENFILENAME,*LPOPENFILENAME;
 typedef OFNOTIFYW OFNOTIFY,*LPOFNOTIFY;
 typedef PAGESETUPDLGW PAGESETUPDLG,*LPPAGESETUPDLG;
 typedef PRINTDLGW PRINTDLG,*LPPRINTDLG;
-#ifndef _WIN32_WCE
-#define ChooseColor ChooseColorW
-#endif
+#define ChooseColor _WNAME(ChooseColor)
 #define ChooseFont ChooseFontW
 #define FindText FindTextW
 #define GetFileTitle GetFileTitleW
 #define GetOpenFileName GetOpenFileNameW
 #define GetSaveFileName GetSaveFileNameW
 #define PageSetupDlg PageSetupDlgW
-#ifndef _WIN32_WCE
-#define PrintDlg PrintDlgW
-#endif
+#define PrintDlg _WNAME(PrintDlg)
 #define ReplaceText ReplaceTextW
 #if (WINVER >= 0x0500) && !defined (_OBJC_NO_COM)
 typedef PRINTDLGEXW PRINTDLGEX, *LPPRINTDLGEX;
@@ -604,9 +592,7 @@ typedef OPENFILENAMEA OPENFILENAME,*LPOPENFILENAME;
 typedef OFNOTIFYA OFNOTIFY,*LPOFNOTIFY;
 typedef PAGESETUPDLGA PAGESETUPDLG,*LPPAGESETUPDLG;
 typedef PRINTDLGA PRINTDLG,*LPPRINTDLG;
-#ifndef _WIN32_WCE
 #define ChooseColor ChooseColorA
-#endif
 #define ChooseFont ChooseFontA
 #define FindText FindTextA
 #define GetFileTitle GetFileTitleA
