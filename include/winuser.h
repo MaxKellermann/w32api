@@ -3508,11 +3508,9 @@ WINUSERAPI BOOL WINAPI ChangeClipboardChain(HWND,HWND);
 #ifndef _WIN32_WCE
 WINUSERAPI LONG WINAPI ChangeDisplaySettingsA(PDEVMODEA,DWORD);
 WINUSERAPI LONG WINAPI ChangeDisplaySettingsW(PDEVMODEW,DWORD);
+#endif
 WINUSERAPI LONG WINAPI ChangeDisplaySettingsExA(LPCSTR,LPDEVMODEA,HWND,DWORD,LPVOID);
-WINUSERAPI LONG WINAPI ChangeDisplaySettingsExW(LPCWSTR,LPDEVMODEW,HWND,DWORD,LPVOID);
-#else /* _WIN32_WCE */
-WINUSERAPI LONG WINAPI ChangeDisplaySettingsEx(LPCWSTR,LPDEVMODEW,HWND,DWORD,LPVOID);
-#endif /* _WIN32_WCE */
+WINUSERAPI LONG WINAPI _WNAME(ChangeDisplaySettingsEx)(LPCWSTR,LPDEVMODEW,HWND,DWORD,LPVOID);
 #endif
 WINUSERAPI BOOL WINAPI ChangeMenuA(HMENU,UINT,LPCSTR,UINT,UINT);
 WINUSERAPI BOOL WINAPI ChangeMenuW(HMENU,UINT,LPCWSTR,UINT,UINT);
@@ -3672,19 +3670,14 @@ WINUSERAPI BOOL WINAPI EnumDesktopsW(HWINSTA,DESKTOPENUMPROCW,LPARAM);
 WINUSERAPI BOOL WINAPI EnumDesktopWindows(HDESK,ENUMWINDOWSPROC,LPARAM);
 WINUSERAPI BOOL WINAPI EnumDisplayMonitors(HDC,LPCRECT,MONITORENUMPROC,LPARAM);
 #ifndef NOGDI
-#ifdef _WIN32_WCE
-WINUSERAPI BOOL WINAPI EnumDisplaySettings(LPCWSTR,DWORD,PDEVMODEW);
-WINUSERAPI BOOL WINAPI EnumDisplayDevices(LPCWSTR,DWORD,PDISPLAY_DEVICEW,DWORD);
-#else
 WINUSERAPI BOOL WINAPI EnumDisplaySettingsA(LPCSTR,DWORD,PDEVMODEA);
-WINUSERAPI BOOL WINAPI EnumDisplaySettingsW(LPCWSTR,DWORD,PDEVMODEW);
+WINUSERAPI BOOL WINAPI _WNAME(EnumDisplaySettings)(LPCWSTR,DWORD,PDEVMODEW);
 #if (_WIN32_WINNT >= 0x0500 || _WIN32_WINDOWS >= 0x0410)
 WINUSERAPI BOOL WINAPI EnumDisplaySettingsExA(LPCSTR,DWORD,LPDEVMODEA,DWORD);
 WINUSERAPI BOOL WINAPI EnumDisplaySettingsExW(LPCWSTR,DWORD,LPDEVMODEW,DWORD);
 #endif
 WINUSERAPI BOOL WINAPI EnumDisplayDevicesA(LPCSTR,DWORD,PDISPLAY_DEVICEA,DWORD);
-WINUSERAPI BOOL WINAPI EnumDisplayDevicesW(LPCWSTR,DWORD,PDISPLAY_DEVICEW,DWORD);
-#endif
+WINUSERAPI BOOL WINAPI _WNAME(EnumDisplayDevices)(LPCWSTR,DWORD,PDISPLAY_DEVICEW,DWORD);
 #endif
 WINUSERAPI int WINAPI EnumPropsA(HWND,PROPENUMPROCA);
 WINUSERAPI int WINAPI EnumPropsW(HWND,PROPENUMPROCW);
@@ -3797,12 +3790,8 @@ WINUSERAPI HWND WINAPI GetNextDlgTabItem(HWND,HWND,BOOL);
 WINUSERAPI HWND WINAPI GetOpenClipboardWindow(void);
 WINUSERAPI HWND WINAPI GetParent(HWND);
 WINUSERAPI int WINAPI GetPriorityClipboardFormat(UINT*,int);
-#ifdef _WIN32_WCE
-WINUSERAPI HANDLE WINAPI GetProp(HWND, LPCWSTR);
-#else
 WINUSERAPI HANDLE WINAPI GetPropA(HWND,LPCSTR);
-WINUSERAPI HANDLE WINAPI GetPropW(HWND,LPCWSTR);
-#endif
+WINUSERAPI HANDLE WINAPI _WNAME(GetProp)(HWND,LPCWSTR);
 #if (_WIN32_WINNT >= 0x0501)
 WINUSERAPI UINT WINAPI GetRawInputBuffer(PRAWINPUT,PUINT,UINT);
 WINUSERAPI UINT WINAPI GetRawInputData(HRAWINPUT,UINT,LPVOID,PUINT,UINT);
@@ -4047,12 +4036,8 @@ WINUSERAPI UINT WINAPI RegisterWindowMessageW(LPCWSTR);
 WINUSERAPI BOOL WINAPI ReleaseCapture(void);
 WINUSERAPI int WINAPI ReleaseDC(HWND,HDC);
 WINUSERAPI BOOL WINAPI RemoveMenu(HMENU,UINT,UINT);
-#ifdef _WIN32_WCE
-WINUSERAPI HANDLE WINAPI RemoveProp(HWND,LPCWSTR);
-#else
 WINUSERAPI HANDLE WINAPI RemovePropA(HWND,LPCSTR);
-WINUSERAPI HANDLE WINAPI RemovePropW(HWND,LPCWSTR);
-#endif
+WINUSERAPI HANDLE WINAPI _WNAME(RemoveProp)(HWND,LPCWSTR);
 WINUSERAPI BOOL WINAPI ReplyMessage(LRESULT);
 WINUSERAPI BOOL WINAPI ScreenToClient(HWND,LPPOINT);
 WINUSERAPI BOOL WINAPI ScrollDC(HDC,int,int,LPCRECT,LPCRECT,HRGN,LPRECT);
@@ -4111,12 +4096,8 @@ WINUSERAPI HWND WINAPI SetParent(HWND,HWND);
 WINUSERAPI BOOL WINAPI SetProcessDefaultLayout(DWORD);
 #endif /* (_WIN32_WINNT >= 0x0500) */
 WINUSERAPI BOOL WINAPI SetProcessWindowStation(HWINSTA);
-#ifdef _WIN32_WCE
-WINUSERAPI BOOL WINAPI SetProp(HWND,LPCSTR,HANDLE);
-#else
 WINUSERAPI BOOL WINAPI SetPropA(HWND,LPCSTR,HANDLE);
-WINUSERAPI BOOL WINAPI SetPropW(HWND,LPCWSTR,HANDLE);
-#endif
+WINUSERAPI BOOL WINAPI _WNAME(SetProp)(HWND,LPCWSTR,HANDLE);
 WINUSERAPI BOOL WINAPI SetRect(LPRECT,int,int,int,int);
 WINUSERAPI BOOL WINAPI SetRectEmpty(LPRECT);
 WINUSERAPI int WINAPI SetScrollInfo(HWND,int,LPCSCROLLINFO,BOOL);
@@ -4329,9 +4310,7 @@ typedef MONITORINFOEXW MONITORINFOEX, *LPMONITORINFOEX;
 #define GetMenuString GetMenuStringW
 #define GetMessage GetMessageW
 #define GetMonitorInfo GetMonitorInfoW
-#ifndef _WIN32_WCE
-#define GetProp GetPropW
-#endif
+#define GetProp _WNAME(GetProp)
 #define GetRawInputDeviceInfo GetRawInputDeviceInfoW
 #define GetTabbedTextExtent GetTabbedTextExtentW
 #define GetUserObjectInformation GetUserObjectInformationW
@@ -4379,9 +4358,7 @@ typedef MONITORINFOEXW MONITORINFOEX, *LPMONITORINFOEX;
 #define RegisterClipboardFormat RegisterClipboardFormatW
 #define RegisterDeviceNotification RegisterDeviceNotificationW
 #define RegisterWindowMessage RegisterWindowMessageW
-#ifndef _WIN32_WCE
-#define RemoveProp RemovePropW
-#endif
+#define RemoveProp _WNAME(RemoveProp)
 #define SendDlgItemMessage SendDlgItemMessageW
 #define SendMessage SendMessageW
 #define SendMessageCallback SendMessageCallbackW
@@ -4391,9 +4368,7 @@ typedef MONITORINFOEXW MONITORINFOEX, *LPMONITORINFOEX;
 #define SetClassLongPtr SetClassLongPtrW
 #define SetDlgItemText SetDlgItemTextW
 #define SetMenuItemInfo SetMenuItemInfoW
-#ifndef _WIN32_WCE
-#define SetProp SetPropW
-#endif
+#define SetProp _WNAME(SetProp)
 #define SetUserObjectInformation SetUserObjectInformationW
 #define SetWindowLong SetWindowLongW
 #define SetWindowLongPtr SetWindowLongPtrW
@@ -4412,14 +4387,12 @@ typedef MONITORINFOEXW MONITORINFOEX, *LPMONITORINFOEX;
 #ifndef NOGDI
 typedef ICONMETRICSW ICONMETRICS,*LPICONMETRICS;
 typedef NONCLIENTMETRICSW NONCLIENTMETRICS,*LPNONCLIENTMETRICS;
-#define CreateDesktop CreateDesktopW
-#ifndef _WIN32_WCE
 #define ChangeDisplaySettings ChangeDisplaySettingsW
-#define ChangeDisplaySettingsEx ChangeDisplaySettingsExW
-#define EnumDisplaySettings EnumDisplaySettingsW
+#define ChangeDisplaySettingsEx _WNAME(ChangeDisplaySettingsEx)
+#define CreateDesktop CreateDesktopW
+#define EnumDisplaySettings _WNAME(EnumDisplaySettings)
 #define EnumDisplaySettingsEx EnumDisplaySettingsExW
-#define EnumDisplayDevices EnumDisplayDevicesW
-#endif /* _WIN32_WCE */
+#define EnumDisplayDevices _WNAME(EnumDisplayDevices)
 #endif /* NOGDI */
 #else /* UNICODE */
 #define EDITWORDBREAKPROC EDITWORDBREAKPROCA
