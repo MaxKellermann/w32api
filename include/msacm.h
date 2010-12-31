@@ -35,6 +35,11 @@ typedef HACMOBJ *LPHACMOBJ;
 #define ACMFORMATTAGDETAILS_FORMATTAG_CHARS 256
 #define ACMDRIVERDETAILS_FEATURES_CHARS 256
 
+/* via googling */
+#define ACM_FORMATSUGGESTF_WFORMATTAG 0x00010000
+#define ACM_STREAMOPENF_NONREALTIME 4
+#define ACM_STREAMSIZEF_DESTINATION 1
+
 /*msdn.microsoft.com/library/default.asp?url=/library/en-us/multimed/htm/_win32_acmformatdetails_str.asp*/
 typedef struct {
 	DWORD          cbStruct;
