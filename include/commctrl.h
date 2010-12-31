@@ -3079,7 +3079,7 @@ int WINAPI ImageList_GetImageCount(HIMAGELIST);
 BOOL WINAPI ImageList_GetImageInfo(HIMAGELIST,int,IMAGEINFO*);
 #define ImageList_LoadBitmap(h,l,x,G,M) ImageList_LoadImage(h,l,x,G,M,IMAGE_BITMAP,0)
 HIMAGELIST WINAPI ImageList_LoadImageA(HINSTANCE,LPCSTR,int,int,COLORREF,UINT,UINT);
-HIMAGELIST WINAPI ImageList_LoadImageW(HINSTANCE,LPCWSTR,int,int,COLORREF,UINT,UINT);
+HIMAGELIST WINAPI _WNAME(ImageList_LoadImage)(HINSTANCE,LPCWSTR,int,int,COLORREF,UINT,UINT);
 HIMAGELIST WINAPI ImageList_Merge(HIMAGELIST,int,HIMAGELIST,int,int,int);
 BOOL WINAPI ImageList_Remove(HIMAGELIST,int);
 #define ImageList_RemoveAll(l) ImageList_Remove(l,-1)
@@ -3550,7 +3550,7 @@ typedef NMHDDISPINFOW NMHDDISPINFO, *LPNMHDDISPINFO;
 #define TCM_INSERTITEM TCM_INSERTITEMW
 #define CreateStatusWindow CreateStatusWindowW
 #define DrawStatusText DrawStatusTextW
-#define ImageList_LoadImage ImageList_LoadImageW
+#define ImageList_LoadImage _WNAME(ImageList_LoadImage)
 #define DTM_SETFORMAT DTM_SETFORMATW
 #define DTN_USERSTRING DTN_USERSTRINGW
 #define DTN_WMKEYDOWN DTN_WMKEYDOWNW
