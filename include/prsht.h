@@ -79,6 +79,10 @@ extern "C" {
 #endif
 #define PSCB_INITIALIZED	1
 #define PSCB_PRECREATE	2
+#ifdef _WIN32_WCE
+/*googling*/
+#define PSCB_GETVERSION 3
+#endif
 #define PSM_GETTABCONTROL	1140
 #define PSM_GETCURRENTPAGEHWND	1142
 #define PSM_ISDIALOGMESSAGE	1141
