@@ -252,6 +252,16 @@ BOOL SHDoneButton(HWND, DWORD);
 BOOL SHSetAppKeyWndAssoc(BYTE bVk, HWND hwnd);
 #endif	/* _WIN32_WCE >= 0x0300 */
 
+/*googling*/
+#define GN_CONTEXTMENU 1000
+
+/*http://msdn.microsoft.com/en-us/library/bb416652.aspx*/
+typedef struct tagNMRGINFO {
+	NMHDR	hdr;
+	POINT	ptAction;
+	DWORD	dwItemSpec;
+} NMRGINFO, *PNMRGINFO;
+
 #ifdef	__cplusplus
 }
 #endif
