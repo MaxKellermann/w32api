@@ -1475,11 +1475,10 @@ BOOL WINAPI SHGetPathFromIDListA(LPCITEMIDLIST,LPSTR);
 BOOL WINAPI _WNAME(SHGetPathFromIDList)(LPCITEMIDLIST,LPWSTR);
 HRESULT WINAPI SHGetSpecialFolderLocation(HWND,int,LPITEMIDLIST*);
 HRESULT WINAPI SHLoadInProc(REFCLSID);
-#ifndef _WIN32_WCE
-#if (_WIN32_IE >= 0x0400)
+#if defined(_WIN32_WCE) || (_WIN32_IE >= 0x0400)
+/*available at least since ce 3.0*/
 BOOL WINAPI SHGetSpecialFolderPathA(HWND,LPSTR,int,BOOL);
-BOOL WINAPI SHGetSpecialFolderPathW(HWND,LPWSTR,int,BOOL);
-#endif 
+BOOL WINAPI _WNAME(SHGetSpecialFolderPath)(HWND,LPWSTR,int,BOOL);
 #endif
 /* SHGetFolderPath in shfolder.dll on W9x, NT4, also in shell32.dll on W2K */
 HRESULT WINAPI SHGetFolderPathA(HWND,int,HANDLE,DWORD,LPSTR);
@@ -1530,8 +1529,8 @@ typedef BROWSEINFOW BROWSEINFO,*PBROWSEINFO,*LPBROWSEINFO;
 #define SHBrowseForFolder SHBrowseForFolderW
 #define SHGetDataFromIDList SHGetDataFromIDListW
 #define SHGetPathFromIDList _WNAME(SHGetPathFromIDList)
-#if (_WIN32_IE >= 0x0400)
-#define SHGetSpecialFolderPath SHGetSpecialFolderPathW
+#if defined(_WIN32_WCE) || (_WIN32_IE >= 0x0400)
+#define SHGetSpecialFolderPath _WNAME(SHGetSpecialFolderPath)
 #endif
 #define SHGetFolderPath SHGetFolderPathW 
 #if (_WIN32_WINNT >= 0x0500)
