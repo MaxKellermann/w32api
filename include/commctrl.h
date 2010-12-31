@@ -142,11 +142,17 @@ extern "C" {
 #define WC_LINK WC_LINKA
 #endif
 
+#ifdef _WIN32_WCE
+/*http://yta.blogzine.jp/weblog/2010/12/propertysheet.html*/
+/*also google for +COMCTL32_VERSION windowsmobile*/
+#define COMCTL32_VERSION 0x210
+#else
 #if (_WIN32_IE >= 0x0500)
 #if (_WIN32_WINNT >= 0x0501)
 #define COMCTL32_VERSION 6
 #else
 #define COMCTL32_VERSION 5
+#endif
 #endif
 #endif
 
