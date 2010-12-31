@@ -2016,6 +2016,10 @@ extern "C" {
 #define VK_OEM_6	0xDD
 #define VK_OEM_7	0xDE
 #define VK_OEM_8	0xDF
+#ifdef _WIN32_WCE
+/*http://msdn.microsoft.com/en-us/library/bb431750.aspx*/
+#define VK_OFF          0xDF
+#endif
 #if (_WIN32_WINNT >= 0x0500)
 #define VK_OEM_102	0xE2
 #endif
