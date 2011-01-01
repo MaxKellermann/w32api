@@ -2298,6 +2298,7 @@ extern "C" {
 #define MOD_WIN 8
 #define MOD_IGNORE_ALL_MODIFIER 1024
 #define MOD_ON_KEYUP  2048
+#define MOD_KEYUP 4096
 #define MOD_RIGHT 16384
 #define MOD_LEFT 32768
 #define LLKHF_EXTENDED	(KF_EXTENDED >> 8)
