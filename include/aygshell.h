@@ -214,6 +214,7 @@ typedef struct tagSHRGI {
 } SHRGINFO, *PSHRGINFO;
 
 WINSHELLAPI DWORD SHRecognizeGesture(SHRGINFO *shrg);
+#define SHRG_RETURNCMD 0x0001
 #endif
 
 #if (_WIN32_WCE >= 0x0300)
