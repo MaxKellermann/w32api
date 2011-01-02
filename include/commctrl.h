@@ -3780,7 +3780,7 @@ COMMCTRLAPI int WINAPI CommandBar_Height(HWND hwndCB);
 #define CommandBar_InsertButton(hwnd,i,lptbbutton)              \
     ((BOOL)SendMessage((hwnd),TB_INSERTBUTTON,(i),(lptbbutton)))
 #define CommandBar_Destroy(hwnd)                                \
-    ((void)DestroyWindow(hwnd))
+    DestroyWindow(hwnd)
 #define CommandBar_AddButtons(h, cb, lp)                        \
     SendMessage((h), TB_ADDBUTTONS, (WPARAM)(cb), (LPARAM)(lp))
 
