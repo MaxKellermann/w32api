@@ -424,7 +424,7 @@ extern "C" {
 #define IPM_SETRANGE	(WM_USER+103)
 #define IPM_SETFOCUS	(WM_USER+104)
 #define IPM_ISBLANK	(WM_USER+105)
-#if (_WIN32_IE >= 0x0500)
+#if (_WIN32_IE >= 0x0500) || (_WIN32_WCE >= 0x300)
 #define I_INDENTCALLBACK (-1)
 #define I_IMAGENONE (-2)
 #endif
