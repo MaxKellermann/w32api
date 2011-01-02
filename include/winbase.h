@@ -2820,6 +2820,7 @@ typedef PCACTCTXA PCACTCTX;
 #include <kfuncs.h>
 
 #define	lstrcpyW wcscpy
+#define	lstrcpynW wcsncpy
 #define lstrcatW wcscat
 #define lstrlenW wcslen
 
