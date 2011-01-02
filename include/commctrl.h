@@ -3783,6 +3783,8 @@ COMMCTRLAPI int WINAPI CommandBar_Height(HWND hwndCB);
     DestroyWindow(hwnd)
 #define CommandBar_AddButtons(h, cb, lp)                        \
     SendMessage((h), TB_ADDBUTTONS, (WPARAM)(cb), (LPARAM)(lp))
+#define CommandBar_IsVisible(hwnd)                              \
+    IsWindowVisible(hwnd)
 
 
 #endif /* _WIN32_WCE */
