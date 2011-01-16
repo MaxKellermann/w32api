@@ -3915,7 +3915,9 @@ WINUSERAPI BOOL WINAPI IsClipboardFormatAvailable(UINT);
 WINUSERAPI BOOL WINAPI IsDialogMessageA(HWND,LPMSG);
 WINUSERAPI BOOL WINAPI IsDialogMessageW(HWND,LPMSG);
 #ifdef _WIN32_WCE
-#define	IsDlgButtonChecked(h, i) SendDlgItemMessageW(h, i, BM_GETCHECK, (WPARAM)(0), 0)
+static inline BOOL IsDlgButtonChecked(HWND h, int i) {
+	SendDlgItemMessageW(h, i, BM_GETCHECK, (WPARAM)(0), 0);
+}
 #else
 WINUSERAPI UINT WINAPI IsDlgButtonChecked(HWND,int);
 #endif
