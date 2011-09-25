@@ -34,6 +34,7 @@ AdjustWindowRectEx
 AdvertiseInterface
 AllKeys
 AllocPhysMem
+AlphaBlend
 AppendMenuW
 AttachDebugger
 AudioUpdateFromRegistry
