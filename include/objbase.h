@@ -9,6 +9,7 @@
 #pragma GCC system_header
 #endif
 
+#include <string.h>
 #include <stdlib.h>
 #pragma pack(push,8)
 #include <basetyps.h>
