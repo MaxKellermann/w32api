@@ -36,7 +36,6 @@ extern "C" {
 #include <winerror.h>
 
 #ifndef RC_INVOKED
-#include <string.h>
 
 /* FIXME: add more architectures. Is there a way to specify this in GCC? */
 #ifdef _X86_
