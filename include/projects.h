@@ -75,4 +75,8 @@ BOOL FindNextProjectFile(HANDLE hHandle, LPWIN32_FIND_DATA lpFindProjData);
 #define	PRJ_ENUM_HOME_PROJ	0x100
 
 #endif	/* _WIN32_WCE */
+
+#ifdef __cplusplus
+}
+#endif
 #endif	/* _PROJECT_H_ */
