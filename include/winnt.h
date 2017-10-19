@@ -2359,8 +2359,9 @@ typedef struct _CONTEXT {
 #define CONTEXT_ARM    0x0000040
 #define CONTEXT_CONTROL         (CONTEXT_ARM | 0x00000001L)
 #define CONTEXT_INTEGER         (CONTEXT_ARM | 0x00000002L)
+#define CONTEXT_FLOATING_POINT  (CONTEXT_ARM | 0x00000004L)
 
-#define CONTEXT_FULL (CONTEXT_CONTROL | CONTEXT_INTEGER)
+#define CONTEXT_FULL (CONTEXT_CONTROL | CONTEXT_INTEGER | CONTEXT_FLOATING_POINT)
 
 typedef struct _CONTEXT {
 	/* The flags values within this flag control the contents of
@@ -2401,6 +2402,13 @@ typedef struct _CONTEXT {
 	ULONG Lr;
 	ULONG Pc;
 	ULONG Psr;
+#define NUM_VFP_REGS            32
+#define NUM_EXTRA_CONTROL_REGS  8
+	/* Floating point registers */
+	ULONG Fpscr;
+	ULONG FpExc;
+	ULONG S[NUM_VFP_REGS+1];
+	ULONG FpExtra[NUM_EXTRA_CONTROL_REGS];
 } CONTEXT;
 
 #else
