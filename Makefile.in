@@ -92,7 +92,8 @@ FLAGS_TO_PASS = \
 	TAR="$(TAR)" \
 	TARFLAGS="$(TARFLAGS)" \
 	TARFILEEXT="$(TARFILEEXT)" \
-	WINDRES="$(WINDRES)"
+	WINDRES="$(WINDRES)" \
+	DESTDIR="$(DESTDIR)"
 
 # end config section
 
